@@ -3,17 +3,21 @@
 2015-04
 A script to parse the micro benchmark results and generate graphs
 @author: roman
-
 '''
-
+from sys import argv
+import ntpath #basename
 import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
+	
+	if(len(argv)>1):
+		inName = argv[1]
+	else:
+		inName = "./in/synth-nocache.out"
+	inFile = open(inName, "r")
+	
 	dict = dict()
-
 	# parse result
-# 	inFile = open("./data/synth.out", "r")
-	inFile = open("./data/libquantum.out", "r")
 	for line in inFile.readlines():
 		
 		cols = line.split()
@@ -43,7 +47,7 @@ if __name__ == '__main__':
 	inFile.close()
 	
 	# dump
-	outFile = open("./out", "w")
+	outFile = open("./out/log.txt", "w")
 	outFile.write(str(dict))
 	outFile.close()
 	
@@ -79,14 +83,16 @@ if __name__ == '__main__':
 			
 		# avg + min
 		mean = plt.scatter(key, avgs[key], c="red", s=10, edgecolors='none', label="mean")
-		min = plt.scatter(key, mins[key], c="green", s=10,edgecolors='none', label="min")
+		min = plt.scatter(key, mins[key], c="green", s=10, edgecolors='none', label="min")
 			
 	plt.xlabel("number of unwinds")
-	plt.ylabel('runtime [us]')
+	plt.ylabel('runtime [ms]')
 	
 	plt.legend((mean, min), ("mean", "min"), loc="lower right")
-#	plt.axis([0,maxKey+0.5,0,maxTime])	#xmin,xmax,ymin,ymax
-	plt.axis([0,maxKey+0.5,0,0.011])	#xmin,xmax,ymin,ymax
+	plt.axis([0,maxKey+0.5,0,maxTime])	#xmin,xmax,ymin,ymax
+#	plt.axis([0,maxKey+0.5,0,0.011])	#xmin,xmax,ymin,ymax
 	
-	plt.savefig('scatter.png')
-	plt.savefig('scatter.pdf')
+	
+	outName = ntpath.basename(inName).split(".")[0]
+	plt.savefig("out/{}.png".format(outName))
+	plt.savefig("out/{}.pdf".format(outName))
