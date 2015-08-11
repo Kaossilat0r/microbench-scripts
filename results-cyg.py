@@ -6,24 +6,21 @@ A script to parse the micro benchmark results and generate graphs
 '''
 from sys import argv
 import ntpath #basename
+import math
 import matplotlib.pyplot as plt
 
-if __name__ == '__main__':
-	
-	if(len(argv)>1):
-		inName = argv[1]
-	else:
-		inName = "./in/synth-nocache.out"
+def stringToNanos(s):
+	return round(float(s)*1000*1000*1000)
+
+def parseNanoDict():
+
 	inFile = open(inName, "r")
-	
-	dict = dict()
-	# parse result
 	for line in inFile.readlines():
 		
 		cols = line.split()
 		
 		if "ref" in line:
-			ref = float(cols[2])*1000
+			ref = stringToNanos(cols[2])
 			continue
 		if not len(cols) == 15:
 			continue
@@ -33,66 +30,105 @@ if __name__ == '__main__':
 		except ValueError:
 			continue
 		
-		runtime = float(cols[2])*1000 - ref
+		runtime = stringToNanos(cols[2]) - ref
 	
-		if not depth in dict:
-			dict[depth] = {}
+		if not depth in nanoDict:
+			nanoDict[depth] = {}
 	
-		if not runtime in dict[depth]:
-			dict[depth][runtime] = 1
+		if not runtime in nanoDict[depth]:
+			nanoDict[depth][runtime] = 1
 		else:
-			oldVal = dict[depth][runtime]
-			dict[depth][runtime] = oldVal + 1
+			oldVal = nanoDict[depth][runtime]
+			nanoDict[depth][runtime] = oldVal + 1
 	
 	inFile.close()
+
+def convertToMicroDict():
+	for depth, times in nanoDict.items():
+		microDict[depth] = {}
+		for rtime, amount in times.items():
+			microTime = round(rtime/1000)
+			if not microTime in microDict[depth]:
+				microDict[depth][microTime] = 0
+			microDict[depth][microTime] = microDict[depth][microTime] + amount
+
+def generateGraph(theDict, scaleFactor, namePostfix):
+	maxKey = max(theDict.keys())
+	maxTime = 0
+	for key, val in theDict.items():
+		localMax = max(val.keys())
+		if localMax > maxTime:
+			maxTime = localMax
+			
+	plt.grid(True, zorder=0)
+	plt.show
 	
-	# dump
-	outFile = open("./out/log.txt", "w")
-	outFile.write(str(dict))
-	outFile.close()
+	for key, val in theDict.items():
+		for e in val:
+			scatterScale = val[e]*(10000*math.sqrt(scaleFactor)/datas)	# size of scatter points
+#			plt.scatter(key, e/scaleFactor, s=scatterScale, alpha=0.3, edgecolors='none')
+			plt.scatter(key, e/scaleFactor, s=scatterScale, marker="_")
+			
+		# avg + min
+		mean = plt.scatter(key, avgs[key]/1000, c="red", s=100, marker="_", edgecolors="red", label="mean")
+		min = plt.scatter(key, mins[key]/1000, c="green", s=100, marker="_", label="min")
+			
+	plt.xlabel("number of unwinds")
+	plt.ylabel("runtime [us]")
+	
+	plt.legend((mean, min), ("mean", "min"), loc="upper left")
+	plt.axis([0,maxKey+0.5,0,maxTime/scaleFactor])	#xmin,xmax,ymin,ymax
+#	plt.axis([0,maxKey+0.5,0,0.011])	#xmin,xmax,ymin,ymax
+
+	plt.savefig("out/{}-{}.png".format(outName, namePostfix))
+	plt.savefig("out/{}-{}.pdf".format(outName, namePostfix))
+	plt.close()
+	
+	print("Saved graph to out/{}-{}.png".format(outName, namePostfix))
+
+if __name__ == '__main__':
+	
+	if(len(argv)>1):
+		inName = argv[1]
+	else:
+		inName = "./in/synth-nocache.out"
+	outName = ntpath.basename(inName).split(".")[0]
+	
+	nanoDict = dict()
+	parseNanoDict()
+	print("Created nano dict.")
+	
+	microDict = dict()
+	convertToMicroDict()
+	print("Created micro dict.")
 	
 	# avg + min
 	mins, avgs, datas = {}, {}, 0
-	for key, val in dict.items():
+	for key, val in nanoDict.items():
 		mins[key] = min(val.keys())
 		
 		sums = 0
 		for t, amount in val.items():
 			sums += t * amount
 		avg = sums / sum(val.values())
-		avgs[key] = avg
+		avgs[key] = round(avg)
 		
 		datas += sum(val.values())
 		
+	# dump
+	logFile = open("./out/log.txt", "w")
+	logFile.write(str(microDict))
+	logFile.close()
+	
+	infoFile = open("./out/{}.txt".format(outName), "w")
+	infoFile.write("{} - {} samples".format(outName, datas) + "\n")
+	for key in nanoDict.keys():
+		diff = avgs[key]-mins[key]
+		diffProc = round(diff/mins[key]*100*100)/100
+		infoFile.write("{:>3} - mean: {:>7} - min: {:>7} - diff: {:>5} ({:>4}%)".format(key, avgs[key], mins[key], diff, diffProc) + "\n")
+	infoFile.close()
 	
 	#graph	
-	maxKey = max(dict.keys())
-	maxTime = 0
-	for key, val in dict.items():
-		localMax = max(val.keys())
-		if localMax > maxTime:
-			maxTime = localMax
-			
-	plt.grid(True)
-	plt.show
-	
-	for key, val in dict.items():
-		for e in val:
-	#		if e < 2*avgs[key]:
-			plt.scatter(key, e, s=val[e]*(50000/datas), alpha=0.3, edgecolors='none')
-			
-		# avg + min
-		mean = plt.scatter(key, avgs[key], c="red", s=10, edgecolors='none', label="mean")
-		min = plt.scatter(key, mins[key], c="green", s=10, edgecolors='none', label="min")
-			
-	plt.xlabel("number of unwinds")
-	plt.ylabel('runtime [ms]')
-	
-	plt.legend((mean, min), ("mean", "min"), loc="lower right")
-	plt.axis([0,maxKey+0.5,0,maxTime])	#xmin,xmax,ymin,ymax
-#	plt.axis([0,maxKey+0.5,0,0.011])	#xmin,xmax,ymin,ymax
-	
-	
-	outName = ntpath.basename(inName).split(".")[0]
-	plt.savefig("out/{}.png".format(outName))
-	plt.savefig("out/{}.pdf".format(outName))
+	print("Creating graphs ..")
+	generateGraph(nanoDict, 1000, "nanos")
+	generateGraph(microDict, 1, "micros")
