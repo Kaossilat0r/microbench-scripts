@@ -116,7 +116,7 @@ if __name__ == '__main__':
 		datas += sum(val.values())
 		
 	# dump
-	logFile = open("./out/log.txt", "w")
+	logFile = open("./out/{}.dump".format(outName), "w")
 	logFile.write(str(microDict))
 	logFile.close()
 	
