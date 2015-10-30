@@ -50,7 +50,7 @@ import matplotlib.pyplot as plt
 
 # parsing stuff
 def stringToNanos(s):
-	return round(float(s)*1000*1000)
+	return float(s)*1000*1000
 
 def parseNanoDict(inName):
 
@@ -102,6 +102,8 @@ def newfig(width):
     ax = fig.add_subplot(111)
     plt.gcf().subplots_adjust(bottom=0.15)	# show x label
     
+ #   ax.set_ylim([0,20])
+    
     ax.xaxis.set_ticks(np.arange(1, 11, 1))	# x axis labels 1,2,3,...,10
     
     return fig, ax
@@ -124,10 +126,10 @@ violin_parts = plt.violinplot(dataset=data, positions=pos,points=100, widths=0.9
                       showmeans=True, showextrema=False, showmedians=False)
 
 for pc in violin_parts['bodies']:
-    pc.set_facecolor('green')
-    pc.set_edgecolor('green')
+#     pc.set_facecolor('yellow')
+#     pc.set_edgecolor('black')
     pc.set_linewidths(defaultLineWidth)
-    pc.set_alpha(1)
+    pc.set_alpha(0.8)
     
 
 #ax.plot(s)
