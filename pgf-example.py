@@ -20,6 +20,8 @@ def figsize(scale):
     fig_size = [fig_width,fig_height]
     return fig_size
 
+defaultLineWidth = 0.4
+
 pgf_with_latex = {                      # setup matplotlib to use latex for output
     "pgf.texsystem": "pdflatex",        # change this if using xetex or lautex
     "text.usetex": True,                # use LaTeX to write all text
@@ -33,6 +35,10 @@ pgf_with_latex = {                      # setup matplotlib to use latex for outp
     "xtick.labelsize": 8,
     "ytick.labelsize": 8,
     "figure.figsize": figsize(0.9),     # default fig size of 0.9 textwidth
+    
+    "lines.linewidth": defaultLineWidth,				# line width of means
+    "axes.linewidth": defaultLineWidth,				# line width of
+    
     "pgf.preamble": [
         r"\usepackage[utf8x]{inputenc}",    # use utf8 fonts becasue your computer can handle it :)
         r"\usepackage[T1]{fontenc}",        # plots will be generated using this preamble
@@ -94,6 +100,9 @@ def newfig(width):
     plt.clf()
     fig = plt.figure(figsize=figsize(width))
     ax = fig.add_subplot(111)
+    plt.gcf().subplots_adjust(bottom=0.15)	# show x label
+    
+    ax.xaxis.set_ticks(np.arange(1, 11, 1))	# x axis labels 1,2,3,...,10
     
     return fig, ax
 
@@ -104,20 +113,29 @@ def savefig(filename):
 
 
 # Simple plot
-fig, ax  = newfig(0.6)
+fig, ax  = newfig(0.9)
 
 pos = [1,2,3,4,5,6,7,8,9,10]
 data = [[] for i in pos]
 
 parseNanoDict(argv[1])
 
-plt.violinplot(dataset=data, positions=pos,points=100, widths=1.0,
-                      showmeans=True, showextrema=False, showmedians=True)
+violin_parts = plt.violinplot(dataset=data, positions=pos,points=100, widths=0.9,
+                      showmeans=True, showextrema=False, showmedians=False)
+
+for pc in violin_parts['bodies']:
+    pc.set_facecolor('green')
+    pc.set_edgecolor('green')
+    pc.set_linewidths(defaultLineWidth)
+    pc.set_alpha(1)
+    
 
 #ax.plot(s)
 plt.grid(True, zorder=0, axis='y')
 plt.xlabel("number of unwinds")
 plt.ylabel("runtime [us]")
+
+
 
 outName = ntpath.basename(argv[1]).split(".")[0]
 savefig(outName)
