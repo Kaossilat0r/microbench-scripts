@@ -4,6 +4,9 @@ Created on 29.10.2015
 @author: roman
 '''
 
+from sys import argv
+import ntpath #basename
+
 import numpy as np
 import matplotlib as mpl
 mpl.use('pgf')
@@ -25,7 +28,7 @@ pgf_with_latex = {                      # setup matplotlib to use latex for outp
     "font.sans-serif": [],
     "font.monospace": [],
     "axes.labelsize": 10,               # LaTeX default is 10pt font.
-    "text.fontsize": 10,
+    "font.size": 10,
     "legend.fontsize": 8,               # Make the legend/label fonts a little smaller
     "xtick.labelsize": 8,
     "ytick.labelsize": 8,
@@ -39,34 +42,82 @@ mpl.rcParams.update(pgf_with_latex)
 
 import matplotlib.pyplot as plt
 
+# parsing stuff
+def stringToNanos(s):
+	return round(float(s)*1000*1000)
+
+def parseNanoDict(inName):
+
+	print("Parsing data ..")
+
+	inFile = open(inName, "r")
+	for line in inFile.readlines():
+		
+		cols = line.split()
+		
+		
+		if "ref" in line:
+			ref = stringToNanos(cols[2])			
+			continue
+		
+		if len(cols) != 19:
+			continue
+		
+		try:
+			depth = int(cols[0])
+		except ValueError:
+			continue
+
+		# do i really want to subtract the reference runtime?		
+		runtime = stringToNanos(cols[2]) - ref
+		
+		if depth == 0:
+			continue
+		
+		data[depth-1].append(runtime)
+	
+	inFile.close()
+	
+	print(".. done")
+
+def convertToMicroDict():
+	for depth, times in nanoDict.items():
+		microDict[depth] = {}
+		for rtime, amount in times.items():
+			microTime = round(rtime/1000)
+			if not microTime in microDict[depth]:
+				microDict[depth][microTime] = 0
+			microDict[depth][microTime] = microDict[depth][microTime] + amount
+
 # I make my own newfig and savefig functions
 def newfig(width):
     plt.clf()
     fig = plt.figure(figsize=figsize(width))
     ax = fig.add_subplot(111)
+    
     return fig, ax
 
 def savefig(filename):
-    plt.savefig('{}.pgf'.format(filename))
-    plt.savefig('{}.pdf'.format(filename))
+	print('saving {}'.format(filename))
+	plt.savefig('{}.pgf'.format(filename))
+	plt.savefig('{}.pdf'.format(filename))
 
 
 # Simple plot
 fig, ax  = newfig(0.6)
 
-def ema(y, a):
-    s = []
-    s.append(y[0])
-    for t in range(1, len(y)):
-        s.append(a * y[t] + (1-a) * s[t-1])
-    return np.array(s)
-    
-y = [0]*200
-y.extend([20]*(1000-len(y)))
-s = ema(y, 0.01)
+pos = [1,2,3,4,5,6,7,8,9,10]
+data = [[] for i in pos]
 
-ax.plot(s)
-ax.set_xlabel('X Label')
-ax.set_ylabel('EMA')
+parseNanoDict(argv[1])
 
-savefig('ema')
+plt.violinplot(dataset=data, positions=pos,points=100, widths=1.0,
+                      showmeans=True, showextrema=False, showmedians=True)
+
+#ax.plot(s)
+plt.grid(True, zorder=0, axis='y')
+plt.xlabel("number of unwinds")
+plt.ylabel("runtime [us]")
+
+outName = ntpath.basename(argv[1]).split(".")[0]
+savefig(outName)
