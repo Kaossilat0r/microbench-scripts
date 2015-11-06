@@ -97,16 +97,20 @@ def convertToMicroDict():
 
 # I make my own newfig and savefig functions
 def newfig(width):
-    plt.clf()
-    fig = plt.figure(figsize=figsize(width))
-    ax = fig.add_subplot(111)
-    plt.gcf().subplots_adjust(bottom=0.15)	# show x label
-    
- #   ax.set_ylim([0,20])
-    
-    ax.xaxis.set_ticks(np.arange(1, 11, 1))	# x axis labels 1,2,3,...,10
-    
-    return fig, ax
+	plt.clf()
+	fig = plt.figure(figsize=figsize(width))
+	ax = fig.add_subplot(111)
+	plt.gcf().subplots_adjust(bottom=0.18)	# show x label
+	plt.gcf().subplots_adjust(left=0.15)	# show y label
+	
+	ax.set_axisbelow(True)
+	
+	ax.set_ylim([0,20])
+	ax.yaxis.set_ticks([1,5,10,15,20])	# x axis labels 1,2,3,...,10
+	
+	ax.xaxis.set_ticks(np.arange(1, 11, 1))	# x axis labels 1,2,3,...,10
+	
+	return fig, ax
 
 def savefig(filename):
 	print('saving {}'.format(filename))
@@ -115,7 +119,7 @@ def savefig(filename):
 
 
 # Simple plot
-fig, ax  = newfig(0.9)
+fig, ax  = newfig(0.49)
 
 pos = [1,2,3,4,5,6,7,8,9,10]
 data = [[] for i in pos]
@@ -133,7 +137,7 @@ for pc in violin_parts['bodies']:
     
 
 #ax.plot(s)
-plt.grid(True, zorder=0, axis='y')
+plt.grid(True, zorder=5, axis='y')
 plt.xlabel("number of unwinds")
 plt.ylabel("runtime [us]")
 
