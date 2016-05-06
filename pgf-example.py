@@ -12,7 +12,7 @@ import matplotlib as mpl
 mpl.use('pgf')
 
 def figsize(scale):
-    fig_width_pt = 469.755                          # Get this from LaTeX using \the\textwidth
+    fig_width_pt = 497.92325                         # Get this from LaTeX using \the\textwidth
     inches_per_pt = 1.0/72.27                       # Convert pt to inch
     golden_mean = (np.sqrt(5.0)-1.0)/2.0            # Aesthetic ratio (you could change this)
     fig_width = fig_width_pt*inches_per_pt*scale    # width in inches
@@ -66,7 +66,8 @@ def parseNanoDict(inName):
 			ref = stringToNanos(cols[2])			
 			continue
 		
-		if len(cols) != 19:
+#		if len(cols) != 19:	# libtiming_papi
+		if len(cols) != 5:	# libtiming_tsc
 			continue
 		
 		try:
@@ -105,8 +106,8 @@ def newfig(width):
 	
 	ax.set_axisbelow(True)
 	
-	ax.set_ylim([0,20])
-	ax.yaxis.set_ticks([1,5,10,15,20])	# x axis labels 1,2,3,...,10
+	ax.set_ylim([0,800])	# MAX Y
+# 	ax.yaxis.set_ticks([1,5,10,15,20])	# x axis labels 1,2,3,...,10
 	
 	ax.xaxis.set_ticks(np.arange(1, 11, 1))	# x axis labels 1,2,3,...,10
 	
@@ -119,7 +120,7 @@ def savefig(filename):
 
 
 # Simple plot
-fig, ax  = newfig(0.49)
+fig, ax  = newfig(0.45)
 
 pos = [1,2,3,4,5,6,7,8,9,10]
 data = [[] for i in pos]
