@@ -104,18 +104,18 @@ print(values)
 ind = np.arange(len(names))    # the x locations for the groups
 width = 0.5       # the width of the bars: can also be len(x) sequence
 
-pBefore = plt.bar(ind, values['profileTime'], width, color='y', bottom=0)
-pAfter = plt.bar(ind, values['ovCompTime'], width, color='r')
-pRef = plt.bar(ind, values['refTime'], width, color='b')
+pBefore = plt.bar(ind, values['profileTime'], width, color='y', zorder=3)
+pAfter = plt.bar(ind, values['ovCompTime'], width, color='r', zorder=3)
+pRef = plt.bar(ind, values['refTime'], width, color='b', zorder=3)
 
 plt.xticks(ind + width/2., names, rotation=25)
 # plt.yticks(np.arange(0, max(values['profileTime']), 500))
-plt.legend((pBefore[0], pAfter[0], pRef[0]), 
+plt.legend((pBefore, pAfter, pRef), 
 		('w/o ovCompensation', 'w/ ovCompensation', 'ref runtime'), loc="upper right")
 
 plt.show()
 
-plt.grid(True, zorder=5, axis='y')
+plt.grid(True, zorder=0, axis='y')
 plt.ylabel("runtime [s]")
 
 
