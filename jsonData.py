@@ -8,8 +8,8 @@ import json
 
 def testJson():
 	exampleDict = {
-		"astar" : {"reftime" : 200, "ovComp" : 250, "profTime" : 500, "phase-instrument" : {"instrOv" : 20, "sampleOv" : 10, "overallOv" : 30} },
-		"libquantum" : {"reftime" : 210, "ovComp" : 220, "profTime" : 700},
+		"astar" : {"reftime" : 200, "ovComp" : 250, "PROF" : 500, "phase-instrument" : {"instrOv" : 20, "sampleOv" : 10, "overallOv" : 30} },
+		"libquantum" : {"reftime" : 210, "ovComp" : 220, "PROF" : 700},
 	}
 	
 	with open('example.json','w') as outFile:
@@ -23,34 +23,37 @@ def testJson():
 
 if __name__ == '__main__':
 	
+	NAME, REF, PROF, COMP, PHASES = "name", "refTime", "profTime", "compTime", "phases"
 	
 # 	testJson()
-	
-	d = {"phases" :{}}
-	phases = d["phases"]
+	benchmarks = []
 	
 	inFile = open('spec-output-stats/444.namd.clang.scorep.log')
 	for line in inFile:
 		if "###" in line:
-			name = line.split()[1]
+			benchmarkName = line.split()[1]
+			d = {PHASES:{}, NAME: benchmarkName}
+			benchmarks.append(d)
 		if "runtime:" in line:
-			d["refTime"] = line.split()[4]
-			d["profile"] = line.split()[1]
+			d[REF] = line.split()[4]
+			d[PROF] = line.split()[1]
 		if "new runtime" in line:
-			d["compTime"] = line.split()[4]
+			d[COMP] = line.split()[4]
 			
 		if "==" in line:
+			phases = d[PHASES]
 			phaseName = line.split('=')[2]
 			phases[phaseName] = {}
+			phase = phases[phaseName]
 			
 		if "---->" in line:
 			ovPercent = line.split()[1]
 			ovSeconds = line.split()[-2]
-			phases[phaseName]["percent"] = ovPercent
-			phases[phaseName]["seconds"] = ovSeconds
+			phase["percent"] = ovPercent
+			phase["seconds"] = ovSeconds
 			
-	print(d)
+	print(benchmarks)
 	with open('example.json','w') as outFile:
-		json.dump(d, outFile, indent=1)
+		json.dump(benchmarks, outFile, indent=1)
 	
 	
