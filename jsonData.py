@@ -17,6 +17,7 @@ def parse_benchmark_results():
         for line in in_file:
             if "###" in line:
                 benchmark_name = line.split()[1]
+                benchmark_name = '.'.join(benchmark_name.split('.')[:2])    # name till second dot
                 benchmark = {PHASES: {}, NAME: benchmark_name}
                 benchmark_results.append(benchmark)
                 phases = benchmark[PHASES]
