@@ -75,40 +75,40 @@ def save_fig(filename):
     # plt.savefig('../{}.pgf'.format(filename))
     plt.savefig('../{}.pdf'.format(filename))
 
+if __name__ == '__main__':
+    # Simple plot
+    fig, ax = new_fig(1.0)
 
-# Simple plot
-fig, ax = new_fig(1.0)
+    data = jsonData.parse_benchmark_results('../spec-output-stats')
 
-data = jsonData.parse_benchmark_results('../spec-output-stats')
+    # refValues, afterOvCompensation, beforeOvCompensation, names = [],[],[],[]
+    names, values = [], {C.REF: [], C.COMP: [], C.PROF: []}
+    for v in data:
+        names.append(v[C.NAME])
+        values[C.PROF].append(v[C.PROF])
+        values[C.COMP].append(v[C.COMP])
+        values[C.REF].append(v[C.REF])
 
-# refValues, afterOvCompensation, beforeOvCompensation, names = [],[],[],[]
-names, values = [], {C.REF: [], C.COMP: [], C.PROF: []}
-for v in data:
-    names.append(v[C.NAME])
-    values[C.PROF].append(v[C.PROF])
-    values[C.COMP].append(v[C.COMP])
-    values[C.REF].append(v[C.REF])
+    print(values)
 
-print(values)
+    ind = np.arange(len(names))  # the x locations for the groups
+    bar_width = 0.5  # the width of the bars: can also be len(x) sequence
 
-ind = np.arange(len(names))  # the x locations for the groups
-bar_width = 0.5  # the width of the bars: can also be len(x) sequence
+    pBefore = plt.bar(ind, values[C.PROF], bar_width, color='y', zorder=3)
+    pAfter = plt.bar(ind, values[C.COMP], bar_width, color='r', zorder=3)
+    pRef = plt.bar(ind, values[C.REF], bar_width, color='b', zorder=3)
 
-pBefore = plt.bar(ind, values[C.PROF], bar_width, color='y', zorder=3)
-pAfter = plt.bar(ind, values[C.COMP], bar_width, color='r', zorder=3)
-pRef = plt.bar(ind, values[C.REF], bar_width, color='b', zorder=3)
+    plt.xticks(ind + bar_width / 2., names, rotation=25)
+    # plt.yticks(np.arange(0, max(values['profileTime']), 500))
+    plt.legend((pBefore, pAfter, pRef),
+               ('w/o ovCompensation', 'w/ ovCompensation', 'ref runtime'), loc="upper right")
 
-plt.xticks(ind + bar_width / 2., names, rotation=25)
-# plt.yticks(np.arange(0, max(values['profileTime']), 500))
-plt.legend((pBefore, pAfter, pRef),
-           ('w/o ovCompensation', 'w/ ovCompensation', 'ref runtime'), loc="upper right")
+    plt.grid(True, zorder=0, axis='y')
+    plt.ylabel("runtime [s]")
 
-plt.grid(True, zorder=0, axis='y')
-plt.ylabel("runtime [s]")
+    outName = "outName"
+    save_fig(outName)
 
-outName = "outName"
-save_fig(outName)
-
-# second figure
-fig, ax = new_fig(1.0)
-save_fig("second")
+    # second figure
+    fig, ax = new_fig(1.0)
+    save_fig("second")
