@@ -5,6 +5,7 @@ Created on 08.05.2016
 '''
 
 import json
+import glob
 
 def testJson():
 	exampleDict = {
@@ -23,30 +24,33 @@ def testJson():
 # benchmarks -> phases -> ovPercent/Seconds
 def parseBenchmarkResults():
 	benchmarks = []
-	inFile = open('spec-output-stats/444.namd.clang.scorep.log')
-	for line in inFile:
-		if "###" in line:
-			benchmarkName = line.split()[1]
-			benchmark = {PHASES:{}, NAME: benchmarkName}
-			benchmarks.append(benchmark)
-			phases = benchmark[PHASES]
-
-		if "runtime:" in line:
-			benchmark[REF] = line.split()[4]
-			benchmark[PROF] = line.split()[1]
-		if "new runtime" in line:
-			benchmark[COMP] = line.split()[4]
-			
-		if "==" in line:
-			phaseName = line.split('=')[2]
-			
-		if "---->" in line:
-			phases[phaseName] = {}
-			phase = phases[phaseName]
-			ovPercent = line.split()[1]
-			ovSeconds = line.split()[-2]
-			phase["percent"] = ovPercent
-			phase["seconds"] = ovSeconds
+	
+	for filename in glob.iglob('spec-output-stats/*.log'):
+	
+		inFile = open(filename)
+		for line in inFile:
+			if "###" in line:
+				benchmarkName = line.split()[1]
+				benchmark = {PHASES:{}, NAME: benchmarkName}
+				benchmarks.append(benchmark)
+				phases = benchmark[PHASES]
+	
+			if "runtime:" in line:
+				benchmark[REF] = line.split()[4]
+				benchmark[PROF] = line.split()[1]
+			if "new runtime" in line:
+				benchmark[COMP] = line.split()[4]
+				
+			if "==" in line:
+				phaseName = line.split('=')[2]
+				
+			if "---->" in line:
+				phase = {}
+				ovPercent = line.split()[1]
+				ovSeconds = line.split()[-2]
+				phase["percent"] = ovPercent
+				phase["seconds"] = ovSeconds
+				phases[phaseName] = phase
 			
 	print(benchmarks)
 	return benchmarks
@@ -59,6 +63,6 @@ if __name__ == '__main__':
 	benchmarks = parseBenchmarkResults()
 
 	with open('example.json','w') as outFile:
-		json.dump(benchmarks, outFile, indent=1)
+		json.dump(benchmarks, outFile, indent=1, sort_keys=True)
 	
 	
