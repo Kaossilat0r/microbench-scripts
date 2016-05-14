@@ -81,15 +81,15 @@ def savefig(filename):
 # Simple plot
 fig, ax = newfig(1.0)
 
-data = jsonData.parse_benchmark_results()
+data = jsonData.parse_benchmark_results('spec-output-stats')
 
 # refValues, afterOvCompensation, beforeOvCompensation, names = [],[],[],[]
 names, values = [], {'refTime': [], 'compTime': [], 'profTime': []}
 for v in data:
     names.append(v['name'])
-    values['refTime'].append(v['refTime'])
-    values['compTime'].append(v['compTime'])
     values['profTime'].append(v['profTime'])
+    values['compTime'].append(v['compTime'])
+    values['refTime'].append(v['refTime'])
 
 print(values)
 

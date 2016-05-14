@@ -9,9 +9,9 @@ import glob
 
 
 # benchmarks -> phases -> ov-source -> ov-percent/seconds
-def parse_benchmark_results():
+def parse_benchmark_results(path):
     benchmark_results = []
-    for filename in glob.iglob('spec-output-stats/*.log'):
+    for filename in glob.iglob(path + '/*.log'):
 
         in_file = open(filename)
         for line in in_file:
@@ -72,6 +72,6 @@ NAME, REF, PROF, COMP, PHASES = "name", "refTime", "profTime", "compTime", "phas
 if __name__ == '__main__':
 
     # 	testJson()
-    benchmarks = parse_benchmark_results()
+    benchmarks = parse_benchmark_results('spec-output-stats')
 
     save_file('spec-estimations.json')
