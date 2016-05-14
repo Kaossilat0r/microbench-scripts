@@ -6,6 +6,7 @@ Created on 08.05.2016
 
 import json
 import glob
+from estimate import constants as C
 
 
 # benchmarks -> phases -> ov-source -> ov-percent/seconds
@@ -18,15 +19,15 @@ def parse_benchmark_results(path):
             if "###" in line:
                 benchmark_name = line.split()[1]
                 benchmark_name = '.'.join(benchmark_name.split('.')[:2])    # name till second dot
-                benchmark = {PHASES: {}, NAME: benchmark_name}
+                benchmark = {C.PHASES: {}, C.NAME: benchmark_name}
                 benchmark_results.append(benchmark)
-                phases = benchmark[PHASES]
+                phases = benchmark[C.PHASES]
 
             if "runtime:" in line:
-                benchmark[REF] = float(line.split()[4])
-                benchmark[PROF] = float(line.split()[1])
+                benchmark[C.REF] = float(line.split()[4])
+                benchmark[C.PROF] = float(line.split()[1])
             if "new runtime" in line:
-                benchmark[COMP] = float(line.split()[4])
+                benchmark[C.COMP] = float(line.split()[4])
 
             if "==" in line:
                 phase_name = line.split('=')[2]
@@ -66,12 +67,10 @@ def load_file(filename):
     with open(filename) as in_file:
         return json.load(in_file)
 
-# global constants
-NAME, REF, PROF, COMP, PHASES = "name", "refTime", "profTime", "compTime", "phases"
 
 if __name__ == '__main__':
 
     # 	testJson()
-    benchmarks = parse_benchmark_results('spec-output-stats')
+    benchmarks = parse_benchmark_results('../spec-output-stats')
 
-    save_file('spec-estimations.json')
+    save_file('../spec-estimations.json')

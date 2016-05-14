@@ -4,17 +4,17 @@ Created on 29.10.2015
 @author: roman
 '''
 
-from sys import argv
-import ntpath  # basename
-
-import numpy as np
 import matplotlib as mpl
-import jsonData
+import numpy as np
+
+from estimate import jsonData
+from estimate import constants as C
 
 mpl.use('pgf')
+import matplotlib.pyplot as plt
 
 
-def figsize(scale):
+def size_of_figure(scale):
     fig_width_pt = 497.92325  # Get this from LaTeX using \the\textwidth
     inches_per_pt = 1.0 / 72.27  # Convert pt to inch
     # 	golden_mean = (np.sqrt(5.0)-1.0)/2.0            # Aesthetic ratio (you could change this)
@@ -39,7 +39,7 @@ pgf_with_latex = {  # setup matplotlib to use latex for output
     "legend.fontsize": 8,  # Make the legend/label fonts a little smaller
     "xtick.labelsize": 8,
     "ytick.labelsize": 8,
-    "figure.figsize": figsize(0.9),  # default fig size of 0.9 textwidth
+    "figure.figsize": size_of_figure(0.9),  # default fig size of 0.9 textwidth
 
     "lines.linewidth": defaultLineWidth,  # line width of means
     "axes.linewidth": defaultLineWidth,  # line width of
@@ -51,13 +51,11 @@ pgf_with_latex = {  # setup matplotlib to use latex for output
 }
 mpl.rcParams.update(pgf_with_latex)
 
-import matplotlib.pyplot as plt
-
 
 # I make my own newfig and savefig functions
-def newfig(width):
+def new_fig(width):
     plt.clf()
-    fig = plt.figure(figsize=figsize(width))
+    fig = plt.figure(figsize=size_of_figure(width))
     ax = fig.add_subplot(111)
     plt.gcf().subplots_adjust(bottom=0.20)  # show x label
     # 	plt.gcf().subplots_adjust(left=0.15)	# show y label
@@ -72,43 +70,45 @@ def newfig(width):
     return fig, ax
 
 
-def savefig(filename):
+def save_fig(filename):
     print('saving {}'.format(filename))
-    # plt.savefig('{}.pgf'.format(filename))
-    plt.savefig('{}.pdf'.format(filename))
+    # plt.savefig('../{}.pgf'.format(filename))
+    plt.savefig('../{}.pdf'.format(filename))
 
 
 # Simple plot
-fig, ax = newfig(1.0)
+fig, ax = new_fig(1.0)
 
-data = jsonData.parse_benchmark_results('spec-output-stats')
+data = jsonData.parse_benchmark_results('../spec-output-stats')
 
 # refValues, afterOvCompensation, beforeOvCompensation, names = [],[],[],[]
-names, values = [], {'refTime': [], 'compTime': [], 'profTime': []}
+names, values = [], {C.REF: [], C.COMP: [], C.PROF: []}
 for v in data:
-    names.append(v['name'])
-    values['profTime'].append(v['profTime'])
-    values['compTime'].append(v['compTime'])
-    values['refTime'].append(v['refTime'])
+    names.append(v[C.NAME])
+    values[C.PROF].append(v[C.PROF])
+    values[C.COMP].append(v[C.COMP])
+    values[C.REF].append(v[C.REF])
 
 print(values)
 
 ind = np.arange(len(names))  # the x locations for the groups
-width = 0.5  # the width of the bars: can also be len(x) sequence
+bar_width = 0.5  # the width of the bars: can also be len(x) sequence
 
-pBefore = plt.bar(ind, values['profTime'], width, color='y', zorder=3)
-pAfter = plt.bar(ind, values['compTime'], width, color='r', zorder=3)
-pRef = plt.bar(ind, values['refTime'], width, color='b', zorder=3)
+pBefore = plt.bar(ind, values[C.PROF], bar_width, color='y', zorder=3)
+pAfter = plt.bar(ind, values[C.COMP], bar_width, color='r', zorder=3)
+pRef = plt.bar(ind, values[C.REF], bar_width, color='b', zorder=3)
 
-plt.xticks(ind + width / 2., names, rotation=25)
+plt.xticks(ind + bar_width / 2., names, rotation=25)
 # plt.yticks(np.arange(0, max(values['profileTime']), 500))
 plt.legend((pBefore, pAfter, pRef),
            ('w/o ovCompensation', 'w/ ovCompensation', 'ref runtime'), loc="upper right")
-
-plt.show()
 
 plt.grid(True, zorder=0, axis='y')
 plt.ylabel("runtime [s]")
 
 outName = "outName"
-savefig(outName)
+save_fig(outName)
+
+# second figure
+fig, ax = new_fig(1.0)
+save_fig("second")
