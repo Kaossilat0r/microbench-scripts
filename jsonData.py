@@ -10,6 +10,7 @@ import glob
 
 # benchmarks -> phases -> ov-source -> ov-percent/seconds
 def parse_benchmark_results():
+    benchmark_results = []
     for filename in glob.iglob('spec-output-stats/*.log'):
 
         in_file = open(filename)
@@ -17,14 +18,14 @@ def parse_benchmark_results():
             if "###" in line:
                 benchmark_name = line.split()[1]
                 benchmark = {PHASES: {}, NAME: benchmark_name}
-                benchmarks.append(benchmark)
+                benchmark_results.append(benchmark)
                 phases = benchmark[PHASES]
 
             if "runtime:" in line:
-                benchmark[REF] = line.split()[4]
-                benchmark[PROF] = line.split()[1]
+                benchmark[REF] = float(line.split()[4])
+                benchmark[PROF] = float(line.split()[1])
             if "new runtime" in line:
-                benchmark[COMP] = line.split()[4]
+                benchmark[COMP] = float(line.split()[4])
 
             if "==" in line:
                 phase_name = line.split('=')[2]
@@ -32,27 +33,27 @@ def parse_benchmark_results():
 
             if "---->" in line:
                 phase = phases[phase_name]
-                ov_percent = line.split()[1]
-                ov_seconds = line.split()[-2]
+                ov_percent = float(line.split()[1])
+                ov_seconds = float(line.split()[-2])
                 phase["percent"] = ov_percent
                 phase["seconds"] = ov_seconds
 
             if "UNW" in line:
                 phase = phases[phase_name]
-                ov_percent = line.split()[1]
-                ov_seconds = line.split()[-2]
+                ov_percent = float(line.split()[1])
+                ov_seconds = float(line.split()[-2])
                 phase["unwPercent"] = ov_percent
                 phase["unwSeconds"] = ov_seconds
 
             if "INSTR" in line:
                 phase = phases[phase_name]
-                ov_percent = line.split()[1]
-                ov_seconds = line.split()[-2]
+                ov_percent = float(line.split()[1])
+                ov_seconds = float(line.split()[-2])
                 phase["instrPercent"] = ov_percent
                 phase["instrSeconds"] = ov_seconds
 
-    print(benchmarks)
-    return benchmarks
+    print(benchmark_results)
+    return benchmark_results
 
 
 def save_file(filename):
@@ -70,7 +71,6 @@ NAME, REF, PROF, COMP, PHASES = "name", "refTime", "profTime", "compTime", "phas
 if __name__ == '__main__':
 
     # 	testJson()
-    benchmarks = []
     benchmarks = parse_benchmark_results()
 
     save_file('spec-estimations.json')

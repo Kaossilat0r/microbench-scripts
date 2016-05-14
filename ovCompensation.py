@@ -9,6 +9,7 @@ import ntpath  # basename
 
 import numpy as np
 import matplotlib as mpl
+import jsonData
 
 mpl.use('pgf')
 
@@ -73,44 +74,30 @@ def newfig(width):
 
 def savefig(filename):
     print('saving {}'.format(filename))
-    #	plt.savefig('{}.pgf'.format(filename))
+    # plt.savefig('{}.pgf'.format(filename))
     plt.savefig('{}.pdf'.format(filename))
 
 
 # Simple plot
 fig, ax = newfig(1.0)
 
-data = {
-    '403.gcc': {'refTime': 40.3, 'ovCompTime': 166.825, 'profileTime': 661},
-    '429.mcf': {'refTime': 236.2, 'ovCompTime': 418.543, 'profileTime': 1901},
-    '433.milc': {'refTime': 421.7, 'ovCompTime': 639.526, 'profileTime': 2041},
-    '444.namd': {'refTime': 425.7, 'ovCompTime': 494.275, 'profileTime': 2227},
-    '447.dealII': {'refTime': 26.5, 'ovCompTime': 4307.31, 'profileTime': 17483},
-    '450.soplex': {'refTime': 102.9, 'ovCompTime': 781.799, 'profileTime': 11003},
-    '453.povray': {'refTime': 166.6, 'ovCompTime': 2733.38, 'profileTime': 16734},
-    '456.hmmer': {'refTime': 332.9, 'ovCompTime': 346.791, 'profileTime': 523},
-    '458.sjeng': {'refTime': 509.9, 'ovCompTime': 1831.16, 'profileTime': 7446},
-    '462.libquantum': {'refTime': 402.8, 'ovCompTime': 424.877, 'profileTime': 724},
-    '464.h264ref': {'refTime': 71.2, 'ovCompTime': 146.955, 'profileTime': 1430},
-    '470.lbm': {'refTime': 365.7, 'ovCompTime': 366, 'profileTime': 366},
-    '473.astar': {'refTime': 157.1, 'ovCompTime': 604.128, 'profileTime': 6056},
-    '482.sphinx3': {'refTime': 535.2, 'ovCompTime': 672.739, 'profileTime': 2149}
-}
+data = jsonData.parse_benchmark_results()
 
 # refValues, afterOvCompensation, beforeOvCompensation, names = [],[],[],[]
-names, values = [], {'refTime': [], 'ovCompTime': [], 'profileTime': []}
-for k, v in sorted(data.items()):
-    names.append(k)
-    for k2, v2 in v.items():
-        values[k2].append(v2)
+names, values = [], {'refTime': [], 'compTime': [], 'profTime': []}
+for v in data:
+    names.append(v['name'])
+    values['refTime'].append(v['refTime'])
+    values['compTime'].append(v['compTime'])
+    values['profTime'].append(v['profTime'])
 
 print(values)
 
 ind = np.arange(len(names))  # the x locations for the groups
 width = 0.5  # the width of the bars: can also be len(x) sequence
 
-pBefore = plt.bar(ind, values['profileTime'], width, color='y', zorder=3)
-pAfter = plt.bar(ind, values['ovCompTime'], width, color='r', zorder=3)
+pBefore = plt.bar(ind, values['profTime'], width, color='y', zorder=3)
+pAfter = plt.bar(ind, values['compTime'], width, color='r', zorder=3)
 pRef = plt.bar(ind, values['refTime'], width, color='b', zorder=3)
 
 plt.xticks(ind + width / 2., names, rotation=25)
