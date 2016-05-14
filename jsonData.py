@@ -8,25 +8,8 @@ import json
 import glob
 
 
-def test_json():
-    example_dict = {
-        "astar": {"reftime": 200, "ovComp": 250, "PROF": 500,
-                  "phase-instrument": {"instrOv": 20, "sampleOv": 10, "overallOv": 30}},
-        "libquantum": {"reftime": 210, "ovComp": 220, "PROF": 700},
-    }
-
-    with open('example.json', 'w') as outFile:
-        json.dump(example_dict, outFile, indent=1)
-
-    with open('example.json') as inFile:
-        example_dict = json.load(inFile)
-
-    print(example_dict)
-
-
-# benchmarks -> phases -> ovPercent/Seconds
+# benchmarks -> phases -> ov-source -> ov-percent/seconds
 def parse_benchmark_results():
-
     for filename in glob.iglob('spec-output-stats/*.log'):
 
         in_file = open(filename)
@@ -45,25 +28,49 @@ def parse_benchmark_results():
 
             if "==" in line:
                 phase_name = line.split('=')[2]
+                phases[phase_name] = {}
 
             if "---->" in line:
-                phase = {}
+                phase = phases[phase_name]
                 ov_percent = line.split()[1]
                 ov_seconds = line.split()[-2]
                 phase["percent"] = ov_percent
                 phase["seconds"] = ov_seconds
-                phases[phase_name] = phase
+
+            if "UNW" in line:
+                phase = phases[phase_name]
+                ov_percent = line.split()[1]
+                ov_seconds = line.split()[-2]
+                phase["unwPercent"] = ov_percent
+                phase["unwSeconds"] = ov_seconds
+
+            if "INSTR" in line:
+                phase = phases[phase_name]
+                ov_percent = line.split()[1]
+                ov_seconds = line.split()[-2]
+                phase["instrPercent"] = ov_percent
+                phase["instrSeconds"] = ov_seconds
 
     print(benchmarks)
     return benchmarks
 
 
+def save_file(filename):
+    with open(filename, 'w') as out_file:
+        json.dump(benchmarks, out_file, indent=1, sort_keys=True)
+
+
+def load_file(filename):
+    with open(filename) as in_file:
+        return json.load(in_file)
+
+# global constants
 NAME, REF, PROF, COMP, PHASES = "name", "refTime", "profTime", "compTime", "phases"
+
 if __name__ == '__main__':
 
     # 	testJson()
     benchmarks = []
     benchmarks = parse_benchmark_results()
 
-    with open('example.json', 'w') as outFile:
-        json.dump(benchmarks, outFile, indent=1, sort_keys=True)
+    save_file('spec-estimations.json')
