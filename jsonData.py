@@ -20,39 +20,44 @@ def testJson():
 	
 	print(exampleDict)
 
-
-if __name__ == '__main__':
-	
-	NAME, REF, PROF, COMP, PHASES = "name", "refTime", "profTime", "compTime", "phases"
-	
-# 	testJson()
+# benchmarks -> phases -> ovPercent/Seconds
+def parseBenchmarkResults():
 	benchmarks = []
-	
 	inFile = open('spec-output-stats/444.namd.clang.scorep.log')
 	for line in inFile:
 		if "###" in line:
 			benchmarkName = line.split()[1]
-			d = {PHASES:{}, NAME: benchmarkName}
-			benchmarks.append(d)
+			benchmark = {PHASES:{}, NAME: benchmarkName}
+			benchmarks.append(benchmark)
+			phases = benchmark[PHASES]
+
 		if "runtime:" in line:
-			d[REF] = line.split()[4]
-			d[PROF] = line.split()[1]
+			benchmark[REF] = line.split()[4]
+			benchmark[PROF] = line.split()[1]
 		if "new runtime" in line:
-			d[COMP] = line.split()[4]
+			benchmark[COMP] = line.split()[4]
 			
 		if "==" in line:
-			phases = d[PHASES]
 			phaseName = line.split('=')[2]
-			phases[phaseName] = {}
-			phase = phases[phaseName]
 			
 		if "---->" in line:
+			phases[phaseName] = {}
+			phase = phases[phaseName]
 			ovPercent = line.split()[1]
 			ovSeconds = line.split()[-2]
 			phase["percent"] = ovPercent
 			phase["seconds"] = ovSeconds
 			
 	print(benchmarks)
+	return benchmarks
+
+if __name__ == '__main__':
+	
+	NAME, REF, PROF, COMP, PHASES = "name", "refTime", "profTime", "compTime", "phases"
+	
+# 	testJson()
+	benchmarks = parseBenchmarkResults()
+
 	with open('example.json','w') as outFile:
 		json.dump(benchmarks, outFile, indent=1)
 	
