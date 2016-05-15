@@ -1,6 +1,6 @@
 # global constants
 NAME, REF, PROF, COMP, PHASES = "name", "refTime", "profTime", "compTime", "phases"
-UNW_PERCENT, INSTR_PERCENT = "unwPercent", "instrPercent"
+PERCENT, UNW_PERCENT, INSTR_PERCENT = "percent", "unwPercent", "instrPercent"
 
 OUT_DIR = "out-estimate"
 

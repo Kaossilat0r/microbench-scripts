@@ -129,6 +129,34 @@ def figure_single_benchmark():
         save_fig(benchmark_name)
 
 
+def figure_single_phase():
+
+    for phase_name in C.PHASE_ORDER:
+        fig, ax = new_fig(1.0)
+
+        phase_display_name = C.PN[phase_name]
+        names, values = [], {C.INSTR_PERCENT: [], C.UNW_PERCENT: [], C.PERCENT: []}
+        for benchmark in ov_compensation_data:
+            names.append(benchmark[C.NAME])
+
+            ov_data = benchmark[C.PHASES][phase_name]
+            values[C.INSTR_PERCENT].append(ov_data[C.INSTR_PERCENT])
+            values[C.UNW_PERCENT].append(ov_data[C.UNW_PERCENT])
+            values[C.PERCENT].append(ov_data[C.PERCENT])
+
+        ind = np.arange(0.25, len(names) + 0.25)  # the x locations for the groups
+        bar_width = 0.5  # the width of the bars: can also be len(x) sequence
+        p_instr = plt.bar(ind, values[C.INSTR_PERCENT], bar_width, color='b', zorder=3)
+        p_unw = plt.bar(ind, values[C.UNW_PERCENT], bar_width, color='r', zorder=3,
+                        bottom=values[C.INSTR_PERCENT])
+        plt.xticks(ind + bar_width / 2., names, rotation=25)
+        plt.legend((p_unw, p_instr),
+                   ('unwind ', 'instrumentation'), loc="upper right")
+        plt.grid(True, zorder=0, axis='y')
+        plt.ylabel("overhead [%]")
+        save_fig(phase_display_name)
+
+
 if __name__ == '__main__':
 
     if not os.path.exists(C.OUT_DIR):
@@ -138,4 +166,6 @@ if __name__ == '__main__':
 
     figure_ov_compensation()
 
-    figure_single_benchmark()
+    # figure_single_benchmark()
+
+    figure_single_phase()

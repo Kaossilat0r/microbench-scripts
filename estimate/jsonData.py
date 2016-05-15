@@ -61,7 +61,7 @@ def parse_benchmark_results(path):
                 phase["instrPercent"] = ov_percent
                 phase["instrSeconds"] = ov_seconds
 
-    print(benchmark_results)
+    # print(benchmark_results)
     return benchmark_results
 
 
