@@ -109,13 +109,15 @@ def figure_single_benchmark():
 
         benchmark_name = benchmark[C.NAME]
         phase_names, ov_percents = [], {C.INSTR_PERCENT: [], C.UNW_PERCENT: []}
-        for name, v in sorted(benchmark[C.PHASES].items()):
+        for name in C.PHASE_ORDER:
+        # for name, v in sorted(benchmark[C.PHASES].items()):
+            v = benchmark[C.PHASES][name]
             if v[C.INSTR_PERCENT] + v[C.UNW_PERCENT] > 0:
-                phase_names.append(name)
+                phase_names.append(C.PN[name])
                 ov_percents[C.INSTR_PERCENT].append(v[C.INSTR_PERCENT])
                 ov_percents[C.UNW_PERCENT].append(v[C.UNW_PERCENT])
 
-        ind = np.arange(len(phase_names))  # the x locations for the groups
+        ind = np.arange(0.25, len(phase_names)+0.25)  # the x locations for the groups
         bar_width = 0.5  # the width of the bars: can also be len(x) sequence
         p_instr = plt.bar(ind, ov_percents[C.INSTR_PERCENT], bar_width, color='b', zorder=3)
         p_unw = plt.bar(ind, ov_percents[C.UNW_PERCENT], bar_width, color='r', zorder=3, bottom=ov_percents[C.INSTR_PERCENT])
