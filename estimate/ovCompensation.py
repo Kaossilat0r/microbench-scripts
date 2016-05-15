@@ -53,7 +53,7 @@ mpl.rcParams.update(pgf_with_latex)
 
 
 # I make my own newfig and savefig functions
-def new_fig(width):
+def new_fig(width, max_y=0):
     plt.clf()
     fig = plt.figure(figsize=size_of_figure(width))
     ax = fig.add_subplot(111)
@@ -62,7 +62,8 @@ def new_fig(width):
 
     # 	ax.set_axisbelow(True)
 
-    # 	ax.set_ylim([0,800])	# MAX Y
+    if max_y:
+        ax.set_ylim([0, max_y]) # MAX Y
     # 	ax.yaxis.set_ticks([1,5,10,15,20])	# x axis labels 1,2,3,...,10
 
     # 	ax.xaxis.set_ticks(np.arange(1, 11, 1))	# x axis labels 1,2,3,...,10
@@ -75,40 +76,62 @@ def save_fig(filename):
     # plt.savefig('../{}.pgf'.format(filename))
     plt.savefig('../{}.pdf'.format(filename))
 
-if __name__ == '__main__':
-    # Simple plot
+
+def figure_ov_compensation():
     fig, ax = new_fig(1.0)
 
-    data = jsonData.parse_benchmark_results('../spec-output-stats')
-
-    # refValues, afterOvCompensation, beforeOvCompensation, names = [],[],[],[]
     names, values = [], {C.REF: [], C.COMP: [], C.PROF: []}
-    for v in data:
+    for v in ov_compensation_data:
         names.append(v[C.NAME])
         values[C.PROF].append(v[C.PROF])
         values[C.COMP].append(v[C.COMP])
         values[C.REF].append(v[C.REF])
 
-    print(values)
-
     ind = np.arange(len(names))  # the x locations for the groups
     bar_width = 0.5  # the width of the bars: can also be len(x) sequence
-
-    pBefore = plt.bar(ind, values[C.PROF], bar_width, color='y', zorder=3)
-    pAfter = plt.bar(ind, values[C.COMP], bar_width, color='r', zorder=3)
-    pRef = plt.bar(ind, values[C.REF], bar_width, color='b', zorder=3)
-
+    p_before = plt.bar(ind, values[C.PROF], bar_width, color='y', zorder=3)
+    p_after = plt.bar(ind, values[C.COMP], bar_width, color='r', zorder=3)
+    p_ref = plt.bar(ind, values[C.REF], bar_width, color='b', zorder=3)
     plt.xticks(ind + bar_width / 2., names, rotation=25)
     # plt.yticks(np.arange(0, max(values['profileTime']), 500))
-    plt.legend((pBefore, pAfter, pRef),
+    plt.legend((p_before, p_after, p_ref),
                ('w/o ovCompensation', 'w/ ovCompensation', 'ref runtime'), loc="upper right")
-
     plt.grid(True, zorder=0, axis='y')
     plt.ylabel("runtime [s]")
+    out_name = "overheadCompensation"
+    save_fig(out_name)
 
-    outName = "outName"
-    save_fig(outName)
 
-    # second figure
-    fig, ax = new_fig(1.0)
-    save_fig("second")
+def figure_single_benchmark():
+
+    for benchmark in ov_compensation_data:
+        fig, ax = new_fig(1.0)
+
+        benchmark_name = benchmark[C.NAME]
+        phase_name, values = [], {C.INSTR_PERCENT: [], C.UNW_PERCENT: []}
+        for name, v in sorted(benchmark[C.PHASES].items()):
+            if v[C.INSTR_PERCENT] + v[C.UNW_PERCENT] > 0:
+                phase_name.append(name)
+                values[C.INSTR_PERCENT].append(v[C.INSTR_PERCENT])
+                values[C.UNW_PERCENT].append(v[C.UNW_PERCENT])
+
+        ind = np.arange(len(phase_name))  # the x locations for the groups
+        bar_width = 0.5  # the width of the bars: can also be len(x) sequence
+        p_instr = plt.bar(ind, values[C.INSTR_PERCENT], bar_width, color='b', zorder=3)
+        p_unw = plt.bar(ind, values[C.UNW_PERCENT], bar_width, color='r', zorder=3, bottom=values[C.INSTR_PERCENT])
+        plt.xticks(ind + bar_width / 2., phase_name, rotation=25)
+        # plt.yticks(np.arange(0, max(values['profileTime']), 500))
+        plt.legend((p_unw, p_instr),
+                   ('unwind ', 'instrumentation'), loc="upper right")
+        plt.grid(True, zorder=0, axis='y')
+        plt.ylabel("overhead [%]")
+        save_fig(benchmark_name)
+
+
+if __name__ == '__main__':
+
+    ov_compensation_data = jsonData.parse_benchmark_results('../spec-output-stats')
+
+    figure_ov_compensation()
+
+    figure_single_benchmark()
