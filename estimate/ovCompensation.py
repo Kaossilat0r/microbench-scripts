@@ -27,7 +27,7 @@ def size_of_figure(scale):
     return fig_size
 
 
-defaultLineWidth = 0.4
+defaultLineWidth = 1.0
 
 pgf_with_latex = {  # setup matplotlib to use latex for output
     "pgf.texsystem": "pdflatex",  # change this if using xetex or lautex
@@ -77,6 +77,7 @@ def save_fig(filename):
     print('saving {}'.format(filename))
     # plt.savefig('../{}/{}.pgf'.format(C.OUT_DIR, filename))
     plt.savefig('../{}/{}.pdf'.format(C.OUT_DIR, filename))
+    plt.close()
 
 
 def figure_ov_compensation():
@@ -91,12 +92,12 @@ def figure_ov_compensation():
 
     ind = np.arange(len(names))  # the x locations for the groups
     bar_width = 0.5  # the width of the bars: can also be len(x) sequence
-    p_before = plt.bar(ind, values[C.PROF], bar_width, color='y', zorder=3)
-    p_after = plt.bar(ind, values[C.COMP], bar_width, color='r', zorder=3)
-    p_ref = plt.bar(ind, values[C.REF], bar_width, color='b', zorder=3)
+    p_before = plt.bar(ind + 0.25, values[C.PROF], bar_width, color='y', zorder=3)
+    p_after = plt.bar(ind + 0.25, values[C.COMP], bar_width, color='r', zorder=3)
+    p_ref = plt.bar(ind + 0.25, values[C.REF], bar_width, color='b', zorder=3)
     plt.xticks(ind + bar_width / 2., names, rotation=25)
     plt.legend((p_before, p_after, p_ref),
-               ('w/o ovCompensation', 'w/ ovCompensation', 'ref runtime'), loc="upper right")
+               ('before ov compensation', 'after ov compensation', 'ref runtime'), loc="upper right")
     plt.grid(True, zorder=0, axis='y')
     plt.ylabel("runtime [s]")
     save_fig("overheadCompensation")
@@ -110,7 +111,6 @@ def figure_single_benchmark():
         benchmark_name = benchmark[C.NAME]
         phase_names, ov_percents = [], {C.INSTR_PERCENT: [], C.UNW_PERCENT: []}
         for name in C.PHASE_ORDER:
-        # for name, v in sorted(benchmark[C.PHASES].items()):
             v = benchmark[C.PHASES][name]
             if v[C.INSTR_PERCENT] + v[C.UNW_PERCENT] > 0:
                 phase_names.append(C.PN[name])
@@ -135,26 +135,68 @@ def figure_single_phase():
         fig, ax = new_fig(1.0)
 
         phase_display_name = C.PN[phase_name]
-        names, values = [], {C.INSTR_PERCENT: [], C.UNW_PERCENT: [], C.PERCENT: []}
+        benchmark_names, values = [], {C.INSTR_PERCENT: [], C.UNW_PERCENT: [], C.PERCENT: []}
         for benchmark in ov_compensation_data:
-            names.append(benchmark[C.NAME])
+            benchmark_names.append(benchmark[C.NAME])
 
             ov_data = benchmark[C.PHASES][phase_name]
             values[C.INSTR_PERCENT].append(ov_data[C.INSTR_PERCENT])
             values[C.UNW_PERCENT].append(ov_data[C.UNW_PERCENT])
             values[C.PERCENT].append(ov_data[C.PERCENT])
 
-        ind = np.arange(0.25, len(names) + 0.25)  # the x locations for the groups
+        ind = np.arange(0.25, len(benchmark_names) + 0.25)  # the x locations for the groups
         bar_width = 0.5  # the width of the bars: can also be len(x) sequence
         p_instr = plt.bar(ind, values[C.INSTR_PERCENT], bar_width, color='b', zorder=3)
         p_unw = plt.bar(ind, values[C.UNW_PERCENT], bar_width, color='r', zorder=3,
                         bottom=values[C.INSTR_PERCENT])
-        plt.xticks(ind + bar_width / 2., names, rotation=25)
+        plt.xticks(ind + bar_width / 2., benchmark_names, rotation=25)
         plt.legend((p_unw, p_instr),
                    ('unwind ', 'instrumentation'), loc="upper right")
         plt.grid(True, zorder=0, axis='y')
         plt.ylabel("overhead [%]")
         save_fig(phase_display_name)
+
+
+def figure_vs_phase(vs_phases_names):
+    fig, ax = new_fig(1.0)
+
+    benchmark_names = []
+    for benchmark in ov_compensation_data:
+        benchmark_names.append(benchmark[C.NAME])
+
+    vs_phases = {}
+    for phase_name in vs_phases_names:
+
+        phase_display_name = C.PN[phase_name]
+        vs_phases[phase_display_name] = {C.INSTR_PERCENT: [], C.UNW_PERCENT: [], C.PERCENT: []}
+        for benchmark in ov_compensation_data:
+            ov_data = benchmark[C.PHASES][phase_name]
+            values = vs_phases[phase_display_name]
+            values[C.INSTR_PERCENT].append(ov_data[C.INSTR_PERCENT])
+            values[C.UNW_PERCENT].append(ov_data[C.UNW_PERCENT])
+            values[C.PERCENT].append(ov_data[C.PERCENT])
+
+    len_vs = len(vs_phases_names)
+
+    ind = np.arange(len(benchmark_names))  # the x locations for the groups
+    bar_width = 0.5 / len_vs  # the width of the bars: can also be len(x) sequence
+
+    offset = 0
+    plts = []
+    colors = ['r', 'b', 'y']
+    for phase_name, vs_phase in sorted(vs_phases.items()):
+        print(vs_phase)
+
+        p_tmp = plt.bar(ind + offset*bar_width, vs_phase[C.PERCENT], bar_width, color=colors[offset], zorder=3)
+        plts.append(p_tmp)
+        offset += 1
+
+    # p_unw = plt.bar(ind + bar_width, vs_phases[C.PN[vs_phases_names[1]]][C.PERCENT], bar_width, color='r', zorder=3)
+    plt.xticks(ind + bar_width / 2., benchmark_names, rotation=25)
+    plt.legend(plts, vs_phases_names, loc="upper right")
+    plt.grid(True, zorder=0, axis='y')
+    plt.ylabel("overhead [%]")
+    save_fig(vs_phases_names)
 
 
 if __name__ == '__main__':
@@ -163,9 +205,12 @@ if __name__ == '__main__':
         os.makedirs(C.OUT_DIR)
 
     ov_compensation_data = jsonData.parse_benchmark_results('../spec-output-stats')
+    jsonData.save_file(ov_compensation_data, "../spec-estimation.json")
 
     figure_ov_compensation()
 
     # figure_single_benchmark()
+    #
+    # figure_single_phase()
 
-    figure_single_phase()
+    figure_vs_phase(["Instrument", "MinInstrHeuristic", "ConjInstrHeuristic"])

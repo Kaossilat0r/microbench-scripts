@@ -31,14 +31,15 @@ def parse_benchmark_results(path):
 
             if "==" in line:
                 phase_name = line.split('=')[2]
-                phases[phase_name] = {
-                    "percent": 0.0,
-                    "seconds": 0.0,
-                    "unwPercent": 0.0,
-                    "unwSeconds": 0.0,
-                    "instrPercent": 0.0,
-                    "instrSeconds": 0.0
-                }
+                if phase_name not in phases:
+                    phases[phase_name] = {
+                        "percent": 0.0,
+                        "seconds": 0.0,
+                        "unwPercent": 0.0,
+                        "unwSeconds": 0.0,
+                        "instrPercent": 0.0,
+                        "instrSeconds": 0.0
+                    }
 
             if "---->" in line:
                 phase = phases[phase_name]
@@ -65,9 +66,9 @@ def parse_benchmark_results(path):
     return benchmark_results
 
 
-def save_file(filename):
+def save_file(benchmark_dict, filename):
     with open(filename, 'w') as out_file:
-        json.dump(benchmarks, out_file, indent=1, sort_keys=True)
+        json.dump(benchmark_dict, out_file, indent=1, sort_keys=True)
 
 
 def load_file(filename):
