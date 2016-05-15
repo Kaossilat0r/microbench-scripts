@@ -32,12 +32,12 @@ def parse_benchmark_results(path):
             if "==" in line:
                 phase_name = line.split('=')[2]
                 phases[phase_name] = {
-                    "percent" : 0.0,
-                    "seconds" : 0.0,
-                    "unwPercent" : 0.0,
-                    "unwSeconds" : 0.0,
-                    "instrPercent" : 0.0,
-                    "instrSeconds" : 0.0
+                    "percent": 0.0,
+                    "seconds": 0.0,
+                    "unwPercent": 0.0,
+                    "unwSeconds": 0.0,
+                    "instrPercent": 0.0,
+                    "instrSeconds": 0.0
                 }
 
             if "---->" in line:

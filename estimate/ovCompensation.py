@@ -1,8 +1,10 @@
-'''
+"""
 Created on 29.10.2015
 
 @author: roman
-'''
+"""
+
+import os
 
 import matplotlib as mpl
 import numpy as np
@@ -10,7 +12,7 @@ import numpy as np
 from estimate import jsonData
 from estimate import constants as C
 
-mpl.use('pgf')
+mpl.use('pgf')  # has to be set before the following import
 import matplotlib.pyplot as plt
 
 
@@ -58,7 +60,7 @@ def new_fig(width, max_y=0):
     fig = plt.figure(figsize=size_of_figure(width))
     ax = fig.add_subplot(111)
     plt.gcf().subplots_adjust(bottom=0.20)  # show x label
-    # 	plt.gcf().subplots_adjust(left=0.15)	# show y label
+    plt.gcf().subplots_adjust(left=0.15)    # show y label
 
     # 	ax.set_axisbelow(True)
 
@@ -73,8 +75,8 @@ def new_fig(width, max_y=0):
 
 def save_fig(filename):
     print('saving {}'.format(filename))
-    # plt.savefig('../{}.pgf'.format(filename))
-    plt.savefig('../{}.pdf'.format(filename))
+    # plt.savefig('../{}/{}.pgf'.format(C.OUT_DIR, filename))
+    plt.savefig('../{}/{}.pdf'.format(C.OUT_DIR, filename))
 
 
 def figure_ov_compensation():
@@ -93,13 +95,11 @@ def figure_ov_compensation():
     p_after = plt.bar(ind, values[C.COMP], bar_width, color='r', zorder=3)
     p_ref = plt.bar(ind, values[C.REF], bar_width, color='b', zorder=3)
     plt.xticks(ind + bar_width / 2., names, rotation=25)
-    # plt.yticks(np.arange(0, max(values['profileTime']), 500))
     plt.legend((p_before, p_after, p_ref),
                ('w/o ovCompensation', 'w/ ovCompensation', 'ref runtime'), loc="upper right")
     plt.grid(True, zorder=0, axis='y')
     plt.ylabel("runtime [s]")
-    out_name = "overheadCompensation"
-    save_fig(out_name)
+    save_fig("overheadCompensation")
 
 
 def figure_single_benchmark():
@@ -108,19 +108,18 @@ def figure_single_benchmark():
         fig, ax = new_fig(1.0)
 
         benchmark_name = benchmark[C.NAME]
-        phase_name, values = [], {C.INSTR_PERCENT: [], C.UNW_PERCENT: []}
+        phase_names, ov_percents = [], {C.INSTR_PERCENT: [], C.UNW_PERCENT: []}
         for name, v in sorted(benchmark[C.PHASES].items()):
             if v[C.INSTR_PERCENT] + v[C.UNW_PERCENT] > 0:
-                phase_name.append(name)
-                values[C.INSTR_PERCENT].append(v[C.INSTR_PERCENT])
-                values[C.UNW_PERCENT].append(v[C.UNW_PERCENT])
+                phase_names.append(name)
+                ov_percents[C.INSTR_PERCENT].append(v[C.INSTR_PERCENT])
+                ov_percents[C.UNW_PERCENT].append(v[C.UNW_PERCENT])
 
-        ind = np.arange(len(phase_name))  # the x locations for the groups
+        ind = np.arange(len(phase_names))  # the x locations for the groups
         bar_width = 0.5  # the width of the bars: can also be len(x) sequence
-        p_instr = plt.bar(ind, values[C.INSTR_PERCENT], bar_width, color='b', zorder=3)
-        p_unw = plt.bar(ind, values[C.UNW_PERCENT], bar_width, color='r', zorder=3, bottom=values[C.INSTR_PERCENT])
-        plt.xticks(ind + bar_width / 2., phase_name, rotation=25)
-        # plt.yticks(np.arange(0, max(values['profileTime']), 500))
+        p_instr = plt.bar(ind, ov_percents[C.INSTR_PERCENT], bar_width, color='b', zorder=3)
+        p_unw = plt.bar(ind, ov_percents[C.UNW_PERCENT], bar_width, color='r', zorder=3, bottom=ov_percents[C.INSTR_PERCENT])
+        plt.xticks(ind + bar_width / 2., phase_names, rotation=25)
         plt.legend((p_unw, p_instr),
                    ('unwind ', 'instrumentation'), loc="upper right")
         plt.grid(True, zorder=0, axis='y')
@@ -129,6 +128,9 @@ def figure_single_benchmark():
 
 
 if __name__ == '__main__':
+
+    if not os.path.exists(C.OUT_DIR):
+        os.makedirs(C.OUT_DIR)
 
     ov_compensation_data = jsonData.parse_benchmark_results('../spec-output-stats')
 
