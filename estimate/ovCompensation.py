@@ -121,6 +121,8 @@ def figure_single_benchmark():
         bar_width = 0.5  # the width of the bars: can also be len(x) sequence
         p_instr = plt.bar(ind, ov_percents[C.INSTR_PERCENT], bar_width, color='b', zorder=3)
         p_unw = plt.bar(ind, ov_percents[C.UNW_PERCENT], bar_width, color='r', zorder=3, bottom=ov_percents[C.INSTR_PERCENT])
+
+        plt.title(benchmark_name)
         plt.xticks(ind + bar_width / 2., phase_names, rotation=25)
         plt.legend((p_unw, p_instr),
                    ('unwind ', 'instrumentation'), loc="upper right")
@@ -148,6 +150,7 @@ def figure_single_phase():
         p_instr = plt.bar(ind, values[C.INSTR_PERCENT], bar_width, color='b', zorder=3)
         p_unw = plt.bar(ind, values[C.UNW_PERCENT], bar_width, color='r', zorder=3,
                         bottom=values[C.INSTR_PERCENT])
+        plt.title(phase_name)
         plt.xticks(ind + bar_width / 2., benchmark_names, rotation=25)
         plt.legend((p_unw, p_instr),
                    ('unwind ', 'instrumentation'), loc="upper right")
@@ -157,7 +160,6 @@ def figure_single_phase():
 
 
 def figure_vs_phase(vs_phases_names):
-    # TODO order is wonky
     fig, ax = new_fig(1.0)
 
     benchmark_names = []
@@ -183,19 +185,18 @@ def figure_vs_phase(vs_phases_names):
     offset = 0
     plts = []
     colors = ['r', 'b', 'y']
-    for phase_name, vs_phase in sorted(vs_phases.items()):
-        print(vs_phase)
+    for phase_name in vs_phases_names:
+        vs_phase = vs_phases[phase_name]
 
         p_tmp = plt.bar(ind + offset*bar_width, vs_phase[C.PERCENT], bar_width, color=colors[offset], zorder=3)
         plts.append(p_tmp)
         offset += 1
 
-    # p_unw = plt.bar(ind + bar_width, vs_phases[C.PN[vs_phases_names[1]]][C.PERCENT], bar_width, color='r', zorder=3)
     plt.xticks(ind + bar_width / 2., benchmark_names, rotation=25)
     plt.legend(plts, vs_phases_names, loc="upper right")
     plt.grid(True, zorder=0, axis='y')
     plt.ylabel("overhead [%]")
-    save_fig(vs_phases_names)
+    save_fig(",".join(vs_phases_names))
 
 
 if __name__ == '__main__':
@@ -211,3 +212,4 @@ if __name__ == '__main__':
     figure_single_phase()
 
     figure_vs_phase(["ss-cpd", "ss-min", "ss-conj"])
+    figure_vs_phase(["unw-all", "unw-min"])
