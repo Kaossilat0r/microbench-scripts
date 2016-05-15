@@ -110,10 +110,10 @@ def figure_single_benchmark():
 
         benchmark_name = benchmark[C.NAME]
         phase_names, ov_percents = [], {C.INSTR_PERCENT: [], C.UNW_PERCENT: []}
-        for name in C.PHASE_ORDER:
+        for name in C.PHASE_ORDER_DISPLAY:
             v = benchmark[C.PHASES][name]
             if v[C.INSTR_PERCENT] + v[C.UNW_PERCENT] > 0:
-                phase_names.append(C.PN[name])
+                phase_names.append(name)
                 ov_percents[C.INSTR_PERCENT].append(v[C.INSTR_PERCENT])
                 ov_percents[C.UNW_PERCENT].append(v[C.UNW_PERCENT])
 
@@ -131,10 +131,9 @@ def figure_single_benchmark():
 
 def figure_single_phase():
 
-    for phase_name in C.PHASE_ORDER:
+    for phase_name in C.PHASE_ORDER_DISPLAY:
         fig, ax = new_fig(1.0)
 
-        phase_display_name = C.PN[phase_name]
         benchmark_names, values = [], {C.INSTR_PERCENT: [], C.UNW_PERCENT: [], C.PERCENT: []}
         for benchmark in ov_compensation_data:
             benchmark_names.append(benchmark[C.NAME])
@@ -154,7 +153,7 @@ def figure_single_phase():
                    ('unwind ', 'instrumentation'), loc="upper right")
         plt.grid(True, zorder=0, axis='y')
         plt.ylabel("overhead [%]")
-        save_fig(phase_display_name)
+        save_fig(phase_name)
 
 
 def figure_vs_phase(vs_phases_names):
@@ -167,11 +166,10 @@ def figure_vs_phase(vs_phases_names):
     vs_phases = {}
     for phase_name in vs_phases_names:
 
-        phase_display_name = C.PN[phase_name]
-        vs_phases[phase_display_name] = {C.INSTR_PERCENT: [], C.UNW_PERCENT: [], C.PERCENT: []}
+        vs_phases[phase_name] = {C.INSTR_PERCENT: [], C.UNW_PERCENT: [], C.PERCENT: []}
         for benchmark in ov_compensation_data:
             ov_data = benchmark[C.PHASES][phase_name]
-            values = vs_phases[phase_display_name]
+            values = vs_phases[phase_name]
             values[C.INSTR_PERCENT].append(ov_data[C.INSTR_PERCENT])
             values[C.UNW_PERCENT].append(ov_data[C.UNW_PERCENT])
             values[C.PERCENT].append(ov_data[C.PERCENT])
@@ -208,9 +206,7 @@ if __name__ == '__main__':
     jsonData.save_file(ov_compensation_data, "../spec-estimation.json")
 
     figure_ov_compensation()
+    figure_single_benchmark()
+    figure_single_phase()
 
-    # figure_single_benchmark()
-    #
-    # figure_single_phase()
-
-    figure_vs_phase(["Instrument", "MinInstrHeuristic", "ConjInstrHeuristic"])
+    figure_vs_phase(["ss-cpd", "ss-min", "ss-conj"])

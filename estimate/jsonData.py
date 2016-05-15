@@ -30,7 +30,7 @@ def parse_benchmark_results(path):
                 benchmark[C.COMP] = float(line.split()[4])
 
             if "==" in line:
-                phase_name = line.split('=')[2]
+                phase_name = C.PN[line.split('=')[2]]
                 if phase_name not in phases:
                     phases[phase_name] = {
                         "percent": 0.0,
@@ -81,4 +81,4 @@ if __name__ == '__main__':
     # 	testJson()
     benchmarks = parse_benchmark_results('../spec-output-stats')
 
-    save_file('../spec-estimations.json')
+    save_file(benchmarks, '../spec-estimations.json')
