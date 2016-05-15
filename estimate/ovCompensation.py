@@ -110,7 +110,7 @@ def figure_single_benchmark():
 
         benchmark_name = benchmark[C.NAME]
         phase_names, ov_percents = [], {C.INSTR_PERCENT: [], C.UNW_PERCENT: []}
-        for name in C.PHASE_ORDER_DISPLAY:
+        for name in C.PHASE_ORDER:
             v = benchmark[C.PHASES][name]
             if v[C.INSTR_PERCENT] + v[C.UNW_PERCENT] > 0:
                 phase_names.append(name)
@@ -131,7 +131,7 @@ def figure_single_benchmark():
 
 def figure_single_phase():
 
-    for phase_name in C.PHASE_ORDER_DISPLAY:
+    for phase_name in C.PHASE_ORDER:
         fig, ax = new_fig(1.0)
 
         benchmark_names, values = [], {C.INSTR_PERCENT: [], C.UNW_PERCENT: [], C.PERCENT: []}
@@ -157,6 +157,7 @@ def figure_single_phase():
 
 
 def figure_vs_phase(vs_phases_names):
+    # TODO order is wonky
     fig, ax = new_fig(1.0)
 
     benchmark_names = []

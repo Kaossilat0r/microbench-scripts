@@ -20,9 +20,9 @@ PN = {
     'Reset': ''
 }
 
-PHASE_ORDER = ['InstrumentAll', 'Instrument', 'MinInstrHeuristic', 'ConjInstrHeuristic',
+PHASE_ORDER_INTERNAL = ['InstrumentAll', 'Instrument', 'MinInstrHeuristic', 'ConjInstrHeuristic',
                'LibUnwStandard', 'LibUnwUnique', 'UnwStaticLeaf', 'UnwindSample']
 
-PHASE_ORDER_DISPLAY = []
-for name in PHASE_ORDER:
-    PHASE_ORDER_DISPLAY.append(PN[name])
+PHASE_ORDER = []
+for name in PHASE_ORDER_INTERNAL:
+    PHASE_ORDER.append(PN[name])
