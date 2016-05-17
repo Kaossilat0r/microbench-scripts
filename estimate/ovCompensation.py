@@ -184,7 +184,7 @@ def figure_vs_phase(vs_phases_names):
 
     offset = 0
     plts = []
-    colors = ['r', 'b', 'y', 'g', 'c', 'pink', 'violet', 'black']
+    colors = ['b', 'r', 'y', 'g', 'c', 'pink', 'violet', 'black']
     for phase_name in vs_phases_names:
         vs_phase = vs_phases[phase_name]
 
@@ -221,7 +221,9 @@ if __name__ == '__main__':
     # figure_single_benchmark()
     # figure_single_phase()
 
-    figure_vs_phase(["ss-cpd", "ss-min", "ss-conj"])
-    figure_vs_phase(["ss-cpd", "ss-min", "ss-conj"])
+    figure_vs_phase(["ss-cpd", "ss-min", "ss-conj"])    # optimized ss
+    figure_vs_phase(["unw-all", "unw-min"])    # optimized ss
+    figure_vs_phase(["ss-cpd", "unw-all", "hybrid"])    # hybrid vs normal
+    figure_vs_phase(["hybrid", "hybrid-static"])
+    figure_vs_phase(["ss-min", "unw-min", "hybrid", "hybrid-static"])  # hybrid vs optimized
     figure_vs_phase(['ss-all', 'ss-cpd', 'ss-min', 'ss-conj', 'unw-all', 'unw-min', 'hybrid-static', 'hybrid'])
-    # figure_vs_phase(["unw-all", "unw-min"])
