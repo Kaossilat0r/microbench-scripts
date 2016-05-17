@@ -202,6 +202,8 @@ def figure_vs_phase(vs_phases_names):
     save_fig(filename)
 
     plt.ylim(0,25)
+    for p in plts:
+        autolabel(plt, p)
     save_fig(filename+"-25")
 
     plt.close()
@@ -216,6 +218,14 @@ def figure_vs_phase(vs_phases_names):
             out.write(phase_name + " & " + " & ".join("{0:.1f}".format(p) for p in vs_phases[phase_name][C.PERCENT])+" \\\\\n")
         out.write("\\hline\n")
         out.write("\\end{tabular}\n\\end{adjustbox}\n")
+
+
+def autolabel(plt, rects):
+    # attach some text labels
+    for rect in rects:
+        height = rect.get_height()
+        if height > plt.ylim()[1]:
+            plt.text(rect.get_x()+rect.get_width()/2., plt.ylim()[1]*1.05, '%d'%int(height), ha='center', va='bottom')
 
 if __name__ == '__main__':
 
