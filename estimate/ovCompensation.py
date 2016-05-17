@@ -184,7 +184,7 @@ def figure_vs_phase(vs_phases_names):
 
     offset = 0
     plts = []
-    colors = ['r', 'b', 'y']
+    colors = ['r', 'b', 'y', 'g', 'c', 'pink', 'violet', 'black']
     for phase_name in vs_phases_names:
         vs_phase = vs_phases[phase_name]
 
@@ -196,8 +196,18 @@ def figure_vs_phase(vs_phases_names):
     plt.legend(plts, vs_phases_names, loc="upper right")
     plt.grid(True, zorder=0, axis='y')
     plt.ylabel("overhead [%]")
-    save_fig(",".join(vs_phases_names))
+    filename = ",".join(vs_phases_names)
+    save_fig(filename)
 
+    # save latex table
+    with open("../"+C.OUT_DIR+"/"+filename+".txt", 'w') as out:
+        out.write("\\begin{table}\n\\begin{tabular}{ "+"".join("c" for x in range(len(benchmark_names)+1)) + " }\n")
+        out.write("\\hline\n")
+        out.write(" & " + " & ".join(b.split('.')[1] for b in benchmark_names) + " \\\\ \\hline\n")
+        for phase_name in vs_phases_names:
+            out.write(phase_name + " & " + " & ".join("{0:.1f}".format(p) for p in vs_phases[phase_name][C.PERCENT])+" \\\\\n")
+        out.write("\\hline\n")
+        out.write("\\end{tabular}\n\\end{table}\n")
 
 if __name__ == '__main__':
 
@@ -207,9 +217,11 @@ if __name__ == '__main__':
     ov_compensation_data = jsonData.parse_benchmark_results('../spec-output-stats')
     jsonData.save_file(ov_compensation_data, "../spec-estimation.json")
 
-    figure_ov_compensation()
-    figure_single_benchmark()
-    figure_single_phase()
+    # figure_ov_compensation()
+    # figure_single_benchmark()
+    # figure_single_phase()
 
     figure_vs_phase(["ss-cpd", "ss-min", "ss-conj"])
-    figure_vs_phase(["unw-all", "unw-min"])
+    figure_vs_phase(["ss-cpd", "ss-min", "ss-conj"])
+    figure_vs_phase(['ss-all', 'ss-cpd', 'ss-min', 'ss-conj', 'unw-all', 'unw-min', 'hybrid-static', 'hybrid'])
+    # figure_vs_phase(["unw-all", "unw-min"])
