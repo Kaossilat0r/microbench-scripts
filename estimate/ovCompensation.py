@@ -211,11 +211,11 @@ def figure_vs_phase(vs_phases_names):
         out.write("\\begin{adjustbox}{max width=\\textwidth,center}\n")
         out.write("\\begin{tabular}{ "+"".join("c" for x in range(len(benchmark_names)+1)) + " }\n")
         out.write("\\hline\n")
-        out.write(" & " + " & ".join(b.split('.')[1] for b in benchmark_names) + " \\\\ \\hline\n")
+        out.write(" & " + " & ".join("\\rot{"+b.split('.')[1]+"}" for b in benchmark_names) + " \\\\ \\hline\n")
         for phase_name in vs_phases_names:
             out.write(phase_name + " & " + " & ".join("{0:.1f}".format(p) for p in vs_phases[phase_name][C.PERCENT])+" \\\\\n")
         out.write("\\hline\n")
-        out.write("\\end{tabular}\n\\begin{adjustbox}\n")
+        out.write("\\end{tabular}\n\\end{adjustbox}\n")
 
 if __name__ == '__main__':
 
