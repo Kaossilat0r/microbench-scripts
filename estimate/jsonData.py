@@ -10,7 +10,7 @@ from estimate import constants as C
 
 
 # benchmarks -> phases -> ov-source -> ov-percent/seconds
-def parse_benchmark_results(path):
+def parse_benchmark_results(path, consider_sampling_costs=False):
     benchmark_results = []
     for filename in glob.iglob(path + '/*.log'):
 
@@ -45,8 +45,12 @@ def parse_benchmark_results(path):
                 phase = phases[phase_name]
                 ov_percent = float(line.split()[1])
                 ov_seconds = float(line.split()[-2])
-                phase["percent"] = ov_percent
-                phase["seconds"] = ov_seconds
+                if consider_sampling_costs:
+                    phase["percent"] = ov_percent + C.SAMPLE_PERCENT
+                    phase["seconds"] = ov_seconds + C.SAMPLE_PERCENT * benchmark[C.REF]
+                else:
+                    phase["percent"] = ov_percent
+                    phase["seconds"] = ov_seconds
 
             if "UNW" in line:
                 phase = phases[phase_name]

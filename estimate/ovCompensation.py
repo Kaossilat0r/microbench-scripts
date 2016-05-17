@@ -214,7 +214,7 @@ if __name__ == '__main__':
     if not os.path.exists(C.OUT_DIR):
         os.makedirs(C.OUT_DIR)
 
-    ov_compensation_data = jsonData.parse_benchmark_results('../spec-output-stats')
+    ov_compensation_data = jsonData.parse_benchmark_results('../spec-output-stats', consider_sampling_costs=True)
     jsonData.save_file(ov_compensation_data, "../spec-estimation.json")
 
     # figure_ov_compensation()
