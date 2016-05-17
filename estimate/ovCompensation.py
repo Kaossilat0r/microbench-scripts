@@ -75,9 +75,8 @@ def new_fig(width, max_y=0):
 
 def save_fig(filename):
     print('saving {}'.format(filename))
-    # plt.savefig('../{}/{}.pgf'.format(C.OUT_DIR, filename))
+    plt.savefig('../{}/{}.pgf'.format(C.OUT_DIR, filename))
     plt.savefig('../{}/{}.pdf'.format(C.OUT_DIR, filename))
-    plt.close()
 
 
 def figure_ov_compensation():
@@ -101,6 +100,7 @@ def figure_ov_compensation():
     plt.grid(True, zorder=0, axis='y')
     plt.ylabel("runtime [s]")
     save_fig("overheadCompensation")
+    plt.close()
 
 
 def figure_single_benchmark():
@@ -129,6 +129,7 @@ def figure_single_benchmark():
         plt.grid(True, zorder=0, axis='y')
         plt.ylabel("overhead [%]")
         save_fig(benchmark_name)
+        plt.close()
 
 
 def figure_single_phase():
@@ -157,6 +158,7 @@ def figure_single_phase():
         plt.grid(True, zorder=0, axis='y')
         plt.ylabel("overhead [%]")
         save_fig(phase_name)
+        plt.close()
 
 
 def figure_vs_phase(vs_phases_names):
@@ -199,15 +201,21 @@ def figure_vs_phase(vs_phases_names):
     filename = ",".join(vs_phases_names)
     save_fig(filename)
 
+    plt.ylim(0,25)
+    save_fig(filename+"-25")
+
+    plt.close()
+
     # save latex table
     with open("../"+C.OUT_DIR+"/"+filename+".txt", 'w') as out:
-        out.write("\\begin{table}\n\\begin{tabular}{ "+"".join("c" for x in range(len(benchmark_names)+1)) + " }\n")
+        out.write("\\begin{adjustbox}{max width=\\textwidth,center}\n")
+        out.write("\\begin{tabular}{ "+"".join("c" for x in range(len(benchmark_names)+1)) + " }\n")
         out.write("\\hline\n")
         out.write(" & " + " & ".join(b.split('.')[1] for b in benchmark_names) + " \\\\ \\hline\n")
         for phase_name in vs_phases_names:
             out.write(phase_name + " & " + " & ".join("{0:.1f}".format(p) for p in vs_phases[phase_name][C.PERCENT])+" \\\\\n")
         out.write("\\hline\n")
-        out.write("\\end{tabular}\n\\end{table}\n")
+        out.write("\\end{tabular}\n\\begin{adjustbox}\n")
 
 if __name__ == '__main__':
 
