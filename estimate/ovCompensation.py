@@ -209,14 +209,18 @@ def figure_vs_phase(vs_phases_names):
 
     plt.close()
 
-    # save latex table
-    with open("../"+C.OUT_DIR+"/"+filename+".txt", 'w') as out:
+    create_latex_table_vs(benchmark_names, filename, vs_phases, vs_phases_names)
+
+
+def create_latex_table_vs(benchmark_names, filename, vs_phases, vs_phases_names):
+    with open("../" + C.OUT_DIR + "/" + filename + ".txt", 'w') as out:
         out.write("\\begin{adjustbox}{max width=\\textwidth,center}\n")
-        out.write("\\begin{tabular}{ "+"".join("c" for x in range(len(benchmark_names)+1)) + " }\n")
+        out.write("\\begin{tabular}{ " + "".join("c" for x in range(len(benchmark_names) + 1)) + " }\n")
         out.write("\\hline\n")
-        out.write(" & " + " & ".join("\\rot{"+b.split('.')[1]+"}" for b in benchmark_names) + " \\\\ \\hline\n")
+        out.write(" & " + " & ".join("\\rot{" + b.split('.')[1] + "}" for b in benchmark_names) + " \\\\ \\hline\n")
         for phase_name in vs_phases_names:
-            out.write(phase_name + " & " + " & ".join("{0:.1f}".format(p) for p in vs_phases[phase_name][C.PERCENT])+" \\\\\n")
+            out.write(phase_name + " & " + " & ".join(
+                "{0:.1f}".format(p) for p in vs_phases[phase_name][C.PERCENT]) + " \\\\\n")
         out.write("\\hline\n")
         out.write("\\end{tabular}\n\\end{adjustbox}\n")
 
