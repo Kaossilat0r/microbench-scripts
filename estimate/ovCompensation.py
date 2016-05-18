@@ -118,7 +118,7 @@ def figure_single_benchmark():
                 ov_percents[C.INSTR_PERCENT].append(v[C.INSTR_PERCENT])
                 ov_percents[C.UNW_PERCENT].append(v[C.UNW_PERCENT])
 
-        ind = np.arange(0.25, len(phase_names)+0.25)  # the x locations for the groups
+        ind = np.arange(len(phase_names)) + 0.25  # the x locations for the groups
         bar_width = 0.5  # the width of the bars: can also be len(x) sequence
         p_instr = plt.bar(ind, ov_percents[C.INSTR_PERCENT], bar_width, color='b', zorder=3)
         p_unw = plt.bar(ind, ov_percents[C.UNW_PERCENT], bar_width, color='r', zorder=3, bottom=ov_percents[C.INSTR_PERCENT])
@@ -126,7 +126,7 @@ def figure_single_benchmark():
         plt.title(benchmark_name)
         plt.xticks(ind + bar_width / 2., phase_names, rotation=25)
         plt.legend((p_unw, p_instr),
-                   ('unw ', 'instr'), loc="upper right")
+                   ('unw', 'instr'), loc="upper right")
         plt.grid(True, zorder=0, axis='y')
         plt.ylabel("overhead [%]")
         save_fig(benchmark_name)
@@ -147,13 +147,13 @@ def figure_single_phase():
             values[C.UNW_PERCENT].append(ov_data[C.UNW_PERCENT])
             values[C.PERCENT].append(ov_data[C.PERCENT])
 
-        ind = np.arange(0.25, len(benchmark_names) + 0.25)  # the x locations for the groups
+        ind = np.arange(len(benchmark_names)) + 0.25  # the x locations for the groups
         bar_width = 0.5  # the width of the bars: can also be len(x) sequence
         p_instr = plt.bar(ind, values[C.INSTR_PERCENT], bar_width, color='b', zorder=3)
         p_unw = plt.bar(ind, values[C.UNW_PERCENT], bar_width, color='r', zorder=3,
                         bottom=values[C.INSTR_PERCENT])
         plt.title(phase_name)
-        plt.xticks(ind + bar_width / 2., benchmark_names, rotation=25)
+        plt.xticks(ind + bar_width/2, benchmark_names, rotation=25)
         plt.legend((p_unw, p_instr),
                    ('unwind ', 'instrumentation'), loc="upper right")
         plt.grid(True, zorder=0, axis='y')
@@ -182,7 +182,7 @@ def figure_vs_phase(vs_phases_names):
 
     len_vs = len(vs_phases_names)
 
-    ind = np.arange(len(benchmark_names))  # the x locations for the groups
+    ind = np.arange(len(benchmark_names)) + 0.25  # the x locations for the groups
     bar_width = 0.5 / len_vs  # the width of the bars: can also be len(x) sequence
 
     offset = 0
@@ -240,9 +240,9 @@ if __name__ == '__main__':
     ov_compensation_data = jsonData.parse_benchmark_results('../spec-output-stats', consider_sampling_costs=True)
     jsonData.save_file(ov_compensation_data, "../spec-estimation.json")
 
-    # figure_ov_compensation()
+    figure_ov_compensation()
     figure_single_benchmark()
-    # figure_single_phase()
+    figure_single_phase()
 
     figure_vs_phase(["ss-all", "unw-all"])    # normal ss vs unw
     figure_vs_phase(["ss-cpd", "ss-min", "ss-conj"])    # optimized ss
