@@ -13,7 +13,7 @@ PN = {
     'ConjInstrHeuristic': 'ss-conj',
     'LibUnwStandard': 'unw-all',
     'LibUnwUnique': 'unw-min',
-    'UnwStaticLeaf': 'hybrid-static',
+    'UnwStaticLeaf': 'hybrid-st',
     'UnwindSample': 'hybrid',
 
     'OvCompensation': '',

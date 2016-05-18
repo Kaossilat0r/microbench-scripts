@@ -20,7 +20,7 @@ def size_of_figure(scale):
     fig_width_pt = 497.92325  # Get this from LaTeX using \the\textwidth
     inches_per_pt = 1.0 / 72.27  # Convert pt to inch
     # 	golden_mean = (np.sqrt(5.0)-1.0)/2.0            # Aesthetic ratio (you could change this)
-    golden_mean = 1 / 3  # Aesthetic ratio (you could change this)
+    golden_mean = 1 / 2  # Aesthetic ratio (you could change this)
     fig_width = fig_width_pt * inches_per_pt * scale  # width in inches
     fig_height = fig_width * golden_mean  # height in inches
     fig_size = [fig_width, fig_height]
@@ -60,6 +60,7 @@ def new_fig(width, max_y=0):
     fig = plt.figure(figsize=size_of_figure(width))
     ax = fig.add_subplot(111)
     plt.gcf().subplots_adjust(bottom=0.20)  # show x label
+    plt.gcf().subplots_adjust(top=0.85)  # show title
     plt.gcf().subplots_adjust(left=0.15)    # show y label
 
     # 	ax.set_axisbelow(True)
@@ -106,7 +107,7 @@ def figure_ov_compensation():
 def figure_single_benchmark():
 
     for benchmark in ov_compensation_data:
-        fig, ax = new_fig(1.0)
+        fig, ax = new_fig(0.5)
 
         benchmark_name = benchmark[C.NAME]
         phase_names, ov_percents = [], {C.INSTR_PERCENT: [], C.UNW_PERCENT: []}
@@ -125,7 +126,7 @@ def figure_single_benchmark():
         plt.title(benchmark_name)
         plt.xticks(ind + bar_width / 2., phase_names, rotation=25)
         plt.legend((p_unw, p_instr),
-                   ('unwind ', 'instrumentation'), loc="upper right")
+                   ('unw ', 'instr'), loc="upper right")
         plt.grid(True, zorder=0, axis='y')
         plt.ylabel("overhead [%]")
         save_fig(benchmark_name)
@@ -236,12 +237,13 @@ if __name__ == '__main__':
     jsonData.save_file(ov_compensation_data, "../spec-estimation.json")
 
     # figure_ov_compensation()
-    # figure_single_benchmark()
+    figure_single_benchmark()
     # figure_single_phase()
 
+    figure_vs_phase(["ss-all", "unw-all"])    # normal ss vs unw
     figure_vs_phase(["ss-cpd", "ss-min", "ss-conj"])    # optimized ss
     figure_vs_phase(["unw-all", "unw-min"])    # optimized ss
     figure_vs_phase(["ss-cpd", "unw-all", "hybrid"])    # hybrid vs normal
-    figure_vs_phase(["hybrid", "hybrid-static"])
-    figure_vs_phase(["ss-min", "unw-min", "hybrid", "hybrid-static"])  # hybrid vs optimized
-    figure_vs_phase(['ss-all', 'ss-cpd', 'ss-min', 'ss-conj', 'unw-all', 'unw-min', 'hybrid-static', 'hybrid'])
+    figure_vs_phase(["hybrid", "hybrid-st"])
+    figure_vs_phase(["ss-min", "unw-min", "hybrid", "hybrid-st"])  # hybrid vs optimized
+    figure_vs_phase(['ss-all', 'ss-cpd', 'ss-min', 'ss-conj', 'unw-all', 'unw-min', 'hybrid-st', 'hybrid'])
