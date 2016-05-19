@@ -75,9 +75,10 @@ def new_fig(width, max_y=0):
 
 
 def save_fig(filename):
-    print('saving {}'.format(filename))
-    plt.savefig('../{}/{}.pgf'.format(C.OUT_DIR, filename))
-    plt.savefig('../{}/{}.pdf'.format(C.OUT_DIR, filename))
+    save_prefix = '../{}{}/{}'.format(rel_thesis_dir, C.OUT_DIR, filename)
+    print('saving {}'.format(save_prefix))
+    plt.savefig(save_prefix + '.pdf')
+    plt.savefig(save_prefix + '.pgf')
 
 
 def figure_ov_compensation():
@@ -239,6 +240,8 @@ if __name__ == '__main__':
 
     ov_compensation_data = jsonData.parse_benchmark_results('../spec-output-stats', consider_sampling_costs=True)
     jsonData.save_file(ov_compensation_data, "../spec-estimation.json")
+
+    rel_thesis_dir = "../master-thesis/fig/"
 
     figure_ov_compensation()
     figure_single_benchmark()
