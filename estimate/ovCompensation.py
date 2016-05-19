@@ -16,18 +16,17 @@ mpl.use('pgf')  # has to be set before the following import
 import matplotlib.pyplot as plt
 
 
-def size_of_figure(scale):
+defaultLineWidth = 1.0
+ratio = (np.sqrt(5.0)-1.0)/2.0  # golden mean
+
+def size_of_figure(scale, figure_ratio):
     fig_width_pt = 497.92325  # Get this from LaTeX using \the\textwidth
     inches_per_pt = 1.0 / 72.27  # Convert pt to inch
-    # 	golden_mean = (np.sqrt(5.0)-1.0)/2.0            # Aesthetic ratio (you could change this)
-    golden_mean = 1 / 2  # Aesthetic ratio (you could change this)
     fig_width = fig_width_pt * inches_per_pt * scale  # width in inches
-    fig_height = fig_width * golden_mean  # height in inches
+    fig_height = fig_width * figure_ratio  # height in inches
     fig_size = [fig_width, fig_height]
     return fig_size
 
-
-defaultLineWidth = 1.0
 
 pgf_with_latex = {  # setup matplotlib to use latex for output
     "pgf.texsystem": "pdflatex",  # change this if using xetex or lautex
@@ -41,7 +40,7 @@ pgf_with_latex = {  # setup matplotlib to use latex for output
     "legend.fontsize": 8,  # Make the legend/label fonts a little smaller
     "xtick.labelsize": 8,
     "ytick.labelsize": 8,
-    "figure.figsize": size_of_figure(0.9),  # default fig size of 0.9 textwidth
+    "figure.figsize": size_of_figure(0.9, ratio),  # default fig size of 0.9 textwidth
 
     "lines.linewidth": defaultLineWidth,  # line width of means
     "axes.linewidth": defaultLineWidth,  # line width of
@@ -55,14 +54,15 @@ mpl.rcParams.update(pgf_with_latex)
 
 
 # I make my own newfig and savefig functions
-def new_fig(width, max_y=0):
+def new_fig(width, max_y=0, figure_ratio=ratio):
     plt.clf()
-    fig = plt.figure(figsize=size_of_figure(width))
+    fig = plt.figure(figsize=size_of_figure(width, figure_ratio))
     ax = fig.add_subplot(111)
     plt.gcf().subplots_adjust(bottom=0.20)  # show x label
     plt.gcf().subplots_adjust(top=0.85)  # show title
     plt.gcf().subplots_adjust(left=0.15)    # show y label
 
+    pgf_with_latex["figure.figsize"] = size_of_figure(width, figure_ratio)
     # 	ax.set_axisbelow(True)
 
     if max_y:
@@ -82,7 +82,7 @@ def save_fig(filename):
 
 
 def figure_ov_compensation():
-    fig, ax = new_fig(1.0)
+    fig, ax = new_fig(1.0, figure_ratio=1/3)
 
     names, values = [], {C.REF: [], C.COMP: [], C.PROF: []}
     for v in ov_compensation_data:
