@@ -25,6 +25,17 @@ PN = {
 PHASE_ORDER_INTERNAL = ['InstrumentAll', 'Instrument', 'MinInstrHeuristic', 'ConjInstrHeuristic',
                'LibUnwStandard', 'LibUnwUnique', 'UnwStaticLeaf', 'UnwindSample']
 
+COL = {
+    'ss-all': 'violet',
+    'ss-cpd': 'blue',
+    'ss-min': 'navy',
+    'ss-conj': 'purple',
+    'unw-all': 'red',
+    'unw-min': 'pink',
+    'hybrid': 'green',
+    'hybrid-st': 'yellow'
+}
+
 PHASE_ORDER = []
 for name in PHASE_ORDER_INTERNAL:
     PHASE_ORDER.append(PN[name])

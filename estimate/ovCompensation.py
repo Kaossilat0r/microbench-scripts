@@ -164,7 +164,7 @@ def figure_single_phase():
 
 
 def figure_vs_phase(vs_phases_names):
-    fig, ax = new_fig(1.0)
+    fig, ax = new_fig(1.0, figure_ratio=1/3)
 
     benchmark_names = []
     for benchmark in ov_compensation_data:
@@ -188,11 +188,10 @@ def figure_vs_phase(vs_phases_names):
 
     offset = 0
     plts = []
-    colors = ['b', 'r', 'y', 'g', 'c', 'pink', 'violet', 'black']
     for phase_name in vs_phases_names:
         vs_phase = vs_phases[phase_name]
 
-        p_tmp = plt.bar(ind + offset*bar_width, vs_phase[C.PERCENT], bar_width, color=colors[offset], zorder=3)
+        p_tmp = plt.bar(ind + offset*bar_width, vs_phase[C.PERCENT], bar_width, color=C.COL[phase_name], zorder=3)
         plts.append(p_tmp)
         offset += 1
 
@@ -248,6 +247,7 @@ if __name__ == '__main__':
     figure_single_phase()
 
     figure_vs_phase(["ss-all", "unw-all"])    # normal ss vs unw
+    figure_vs_phase(["ss-all", "ss-cpd", "unw-all"])    # normal ss vs unw
     figure_vs_phase(["ss-cpd", "ss-min", "ss-conj"])    # optimized ss
     figure_vs_phase(["unw-all", "unw-min"])    # optimized ss
     figure_vs_phase(["ss-cpd", "unw-all", "hybrid"])    # hybrid vs normal
