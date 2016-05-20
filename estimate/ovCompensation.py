@@ -40,7 +40,7 @@ pgf_with_latex = {  # setup matplotlib to use latex for output
     "legend.fontsize": 8,  # Make the legend/label fonts a little smaller
     "xtick.labelsize": 8,
     "ytick.labelsize": 8,
-    "figure.figsize": size_of_figure(0.9, ratio),  # default fig size of 0.9 textwidth
+    "figure.figsize": size_of_figure(1.0, ratio),  # this is overwritten in new_fig()
 
     "lines.linewidth": defaultLineWidth,  # line width of means
     "axes.linewidth": defaultLineWidth,  # line width of
@@ -163,7 +163,7 @@ def figure_single_phase():
         plt.close()
 
 
-def figure_vs_phase(vs_phases_names):
+def figure_vs_phase(vs_phases_names, max_y=25):
     fig, ax = new_fig(1.0, figure_ratio=1/3)
 
     benchmark_names = []
@@ -202,10 +202,10 @@ def figure_vs_phase(vs_phases_names):
     filename = ",".join(vs_phases_names)
     save_fig(filename)
 
-    plt.ylim(0,25)
+    plt.ylim(0,max_y)
     for p in plts:
         autolabel(plt, p)
-    save_fig(filename+"-25")
+    save_fig(filename+"-"+str(max_y))
 
     plt.close()
 
@@ -243,14 +243,14 @@ if __name__ == '__main__':
     rel_thesis_dir = "../master-thesis/fig/"
 
     figure_ov_compensation()
-    figure_single_benchmark()
-    figure_single_phase()
+    # figure_single_benchmark()
+    # figure_single_phase()
 
     figure_vs_phase(["ss-all", "unw-all"])    # normal ss vs unw
-    figure_vs_phase(["ss-all", "ss-cpd", "unw-all"])    # normal ss vs unw
+    figure_vs_phase(["ss-all", "ss-cpd", "unw-all"], max_y=100)    # normal ss vs unw
     figure_vs_phase(["ss-cpd", "ss-min", "ss-conj"])    # optimized ss
     figure_vs_phase(["unw-all", "unw-min"])    # optimized ss
-    figure_vs_phase(["ss-cpd", "unw-all", "hybrid"])    # hybrid vs normal
+    figure_vs_phase(["ss-cpd", "unw-all", "hybrid"], max_y=100)    # hybrid vs normal
     figure_vs_phase(["hybrid", "hybrid-st"])
-    figure_vs_phase(["ss-min", "unw-min", "hybrid", "hybrid-st"])  # hybrid vs optimized
+    figure_vs_phase(["ss-min", "unw-min", "hybrid", "hybrid-st"], max_y=50)  # hybrid vs optimized
     figure_vs_phase(['ss-all', 'ss-cpd', 'ss-min', 'ss-conj', 'unw-all', 'unw-min', 'hybrid-st', 'hybrid'])

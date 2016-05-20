@@ -28,8 +28,8 @@ PHASE_ORDER_INTERNAL = ['InstrumentAll', 'Instrument', 'MinInstrHeuristic', 'Con
 COL = {
     'ss-all': 'violet',
     'ss-cpd': 'blue',
-    'ss-min': 'navy',
-    'ss-conj': 'purple',
+    'ss-min': 'purple',
+    'ss-conj': 'cyan',
     'unw-all': 'red',
     'unw-min': 'pink',
     'hybrid': 'green',
