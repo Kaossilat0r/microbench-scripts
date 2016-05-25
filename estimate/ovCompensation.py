@@ -85,7 +85,7 @@ def figure_ov_compensation():
     fig, ax = new_fig(1.0, figure_ratio=1/3)
 
     names, values = [], {C.REF: [], C.COMP: [], C.PROF: []}
-    for v in ov_compensation_data:
+    for v in ov_compensation_data_with_avg:
         names.append(v[C.NAME])
         values[C.PROF].append(v[C.PROF])
         values[C.COMP].append(v[C.COMP])
@@ -107,7 +107,7 @@ def figure_ov_compensation():
 
 def figure_single_benchmark():
 
-    for benchmark in ov_compensation_data:
+    for benchmark in ov_compensation_data_with_avg:
         fig, ax = new_fig(0.5)
 
         benchmark_name = benchmark[C.NAME]
@@ -140,7 +140,7 @@ def figure_single_phase():
         fig, ax = new_fig(1.0)
 
         benchmark_names, values = [], {C.INSTR_PERCENT: [], C.UNW_PERCENT: [], C.PERCENT: []}
-        for benchmark in ov_compensation_data:
+        for benchmark in ov_compensation_data_with_avg:
             benchmark_names.append(benchmark[C.NAME])
 
             ov_data = benchmark[C.PHASES][phase_name]
@@ -167,14 +167,14 @@ def figure_vs_phase(vs_phases_names, max_y=25):
     fig, ax = new_fig(1.0, figure_ratio=1/3)
 
     benchmark_names = []
-    for benchmark in ov_compensation_data:
+    for benchmark in ov_compensation_data_with_avg:
         benchmark_names.append(benchmark[C.NAME])
 
     vs_phases = {}
     for phase_name in vs_phases_names:
 
         vs_phases[phase_name] = {C.INSTR_PERCENT: [], C.UNW_PERCENT: [], C.PERCENT: []}
-        for benchmark in ov_compensation_data:
+        for benchmark in ov_compensation_data_with_avg:
             ov_data = benchmark[C.PHASES][phase_name]
             values = vs_phases[phase_name]
             values[C.INSTR_PERCENT].append(ov_data[C.INSTR_PERCENT])
@@ -237,14 +237,15 @@ if __name__ == '__main__':
     if not os.path.exists(C.OUT_DIR):
         os.makedirs(C.OUT_DIR)
 
-    ov_compensation_data = jsonData.parse_benchmark_results('../spec-output-stats', consider_sampling_costs=False)
+    ov_compensation_data, ov_compensation_data_with_avg = jsonData.parse_benchmark_results('../spec-output-stats', consider_sampling_costs=False)
     jsonData.save_file(ov_compensation_data, "../spec-estimation.json")
+    jsonData.save_file(ov_compensation_data_with_avg, "../spec-estimation-with-avg.json")
 
     rel_thesis_dir = "../master-thesis/fig/"
 
     figure_ov_compensation()
     figure_single_benchmark()
-    # figure_single_phase()
+    figure_single_phase()
 
     figure_vs_phase(["ss-all", "unw-all"])    # normal ss vs unw
     figure_vs_phase(["ss-all", "ss-cpd", "unw-all"], max_y=100)    # normal ss vs unw

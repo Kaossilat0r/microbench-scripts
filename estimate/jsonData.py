@@ -8,6 +8,7 @@ import json
 import glob
 from estimate import constants as C
 
+ov_names = ["seconds", "percent", "unwPercent", "unwSeconds", "instrPercent", "instrSeconds"]
 
 # benchmarks -> phases -> ov-source -> ov-percent/seconds
 def parse_benchmark_results(path, consider_sampling_costs=False):
@@ -69,26 +70,32 @@ def parse_benchmark_results(path, consider_sampling_costs=False):
                 phase["instrPercent"] = ov_percent
                 phase["instrSeconds"] = ov_seconds
 
+    benchmark_results_with_avg = benchmark_results.copy()
+
+    # add average values for all benchmarks
     avg_benchmark = {C.PHASES: {}, C.NAME: ".AVG", C.PROF: 0.0, C.COMP: 0.0, C.REF: 0.0}
-    # avg_percent, avg_seconds, avg_unw_percent, avg_unw_seconds, avg_instr_percent, avg_instr_seconds = 0, 0, 0, 0, 0, 0
-    # avg_benchmark[C.PHASES][phase_name] = {"seconds": 0, "percent": 0, "unwPercent": 0, "unwSeconds": 0, "instrPercent": 0, "instrSeconds": 0}
-    for phase_name, phase in benchmark_results[0][C.PHASES].items():
-        avg_benchmark[C.PHASES][phase_name] = {"seconds": 0, "percent": 0, "unwPercent": 0, "unwSeconds": 0,
-                                                   "instrPercent": 0, "instrSeconds": 0}
-    for benchmark in benchmark_results:
+    for phase_name, phase in benchmark_results_with_avg[0][C.PHASES].items():
+        avg_benchmark[C.PHASES][phase_name] = {}
+        for ov_name in ov_names:
+            avg_benchmark[C.PHASES][phase_name][ov_name] = 0.0
+    for benchmark in benchmark_results_with_avg:
+        avg_benchmark[C.REF] += benchmark[C.REF]
+        avg_benchmark[C.COMP] += benchmark[C.COMP]
+        avg_benchmark[C.PROF] += benchmark[C.PROF]
         for phase_name, phase in benchmark[C.PHASES].items():
             for ov_name, ov_value in phase.items():
                 avg_benchmark[C.PHASES][phase_name][ov_name] += phase[ov_name]
 
+    for runtime_name in [C.PROF, C.COMP, C.REF]:
+        avg_benchmark[runtime_name] /= len(benchmark_results)
     for phase_name, phase in avg_benchmark[C.PHASES].items():
         for ov_name, ov_value in phase.items():
             avg_benchmark[C.PHASES][phase_name][ov_name] /= len(benchmark_results)
 
-    print(avg_benchmark)
-    benchmark_results.append(avg_benchmark)
+    benchmark_results_with_avg.append(avg_benchmark)
 
     # print(benchmark_results)
-    return benchmark_results
+    return benchmark_results, benchmark_results_with_avg
 
 
 def save_file(benchmark_dict, filename):
