@@ -31,6 +31,9 @@ def parse_benchmark_results(path, consider_sampling_costs=False):
 
             if "==" in line:
                 phase_name = C.PN[line.split('=')[2]]
+                if phase_name is "":
+                    continue
+
                 if phase_name not in phases:
                     phases[phase_name] = {
                         "percent": 0.0,
@@ -65,6 +68,24 @@ def parse_benchmark_results(path, consider_sampling_costs=False):
                 ov_seconds = float(line.split()[-2])
                 phase["instrPercent"] = ov_percent
                 phase["instrSeconds"] = ov_seconds
+
+    avg_benchmark = {C.PHASES: {}, C.NAME: ".AVG", C.PROF: 0.0, C.COMP: 0.0, C.REF: 0.0}
+    # avg_percent, avg_seconds, avg_unw_percent, avg_unw_seconds, avg_instr_percent, avg_instr_seconds = 0, 0, 0, 0, 0, 0
+    # avg_benchmark[C.PHASES][phase_name] = {"seconds": 0, "percent": 0, "unwPercent": 0, "unwSeconds": 0, "instrPercent": 0, "instrSeconds": 0}
+    for phase_name, phase in benchmark_results[0][C.PHASES].items():
+        avg_benchmark[C.PHASES][phase_name] = {"seconds": 0, "percent": 0, "unwPercent": 0, "unwSeconds": 0,
+                                                   "instrPercent": 0, "instrSeconds": 0}
+    for benchmark in benchmark_results:
+        for phase_name, phase in benchmark[C.PHASES].items():
+            for ov_name, ov_value in phase.items():
+                avg_benchmark[C.PHASES][phase_name][ov_name] += phase[ov_name]
+
+    for phase_name, phase in avg_benchmark[C.PHASES].items():
+        for ov_name, ov_value in phase.items():
+            avg_benchmark[C.PHASES][phase_name][ov_name] /= len(benchmark_results)
+
+    print(avg_benchmark)
+    benchmark_results.append(avg_benchmark)
 
     # print(benchmark_results)
     return benchmark_results

@@ -200,7 +200,7 @@ def figure_vs_phase(vs_phases_names, max_y=25):
     plt.grid(True, zorder=0, axis='y')
     plt.ylabel("overhead [%]")
     filename = ",".join(vs_phases_names)
-    save_fig(filename)
+    save_fig("vs-"+filename)
 
     plt.ylim(0,max_y)
     for p in plts:
@@ -237,20 +237,21 @@ if __name__ == '__main__':
     if not os.path.exists(C.OUT_DIR):
         os.makedirs(C.OUT_DIR)
 
-    ov_compensation_data = jsonData.parse_benchmark_results('../spec-output-stats', consider_sampling_costs=True)
+    ov_compensation_data = jsonData.parse_benchmark_results('../spec-output-stats', consider_sampling_costs=False)
     jsonData.save_file(ov_compensation_data, "../spec-estimation.json")
 
     rel_thesis_dir = "../master-thesis/fig/"
 
     figure_ov_compensation()
-    # figure_single_benchmark()
+    figure_single_benchmark()
     # figure_single_phase()
 
     figure_vs_phase(["ss-all", "unw-all"])    # normal ss vs unw
     figure_vs_phase(["ss-all", "ss-cpd", "unw-all"], max_y=100)    # normal ss vs unw
     figure_vs_phase(["ss-cpd", "ss-min", "ss-conj"])    # optimized ss
-    figure_vs_phase(["unw-all", "unw-min"])    # optimized ss
+    figure_vs_phase(["unw-all", "unw-min"], max_y=50)    # optimized ss
     figure_vs_phase(["ss-cpd", "unw-all", "hybrid"], max_y=100)    # hybrid vs normal
+    figure_vs_phase(["ss-cpd", "unw-min", "hybrid-st"], max_y=50) # with structure knowledge only
     figure_vs_phase(["hybrid", "hybrid-st"])
     figure_vs_phase(["ss-min", "unw-min", "hybrid", "hybrid-st"], max_y=50)  # hybrid vs optimized
     figure_vs_phase(['ss-all', 'ss-cpd', 'ss-min', 'ss-conj', 'unw-all', 'unw-min', 'hybrid-st', 'hybrid'])
