@@ -129,7 +129,7 @@ def figure_single_benchmark():
         plt.legend((p_unw, p_instr),
                    ('unw', 'instr'), loc="upper right")
         plt.grid(True, zorder=0, axis='y')
-        plt.ylabel("overhead [%]")
+        plt.ylabel(default_y_label)
         save_fig(benchmark_name)
         plt.close()
 
@@ -158,12 +158,12 @@ def figure_single_phase():
         plt.legend((p_unw, p_instr),
                    ('unwind ', 'instrumentation'), loc="upper right")
         plt.grid(True, zorder=0, axis='y')
-        plt.ylabel("overhead [%]")
+        plt.ylabel(default_y_label)
         save_fig(phase_name)
         plt.close()
 
 
-def figure_vs_phase(vs_phases_names, max_y=25):
+def figure_vs_phase(vs_phases_names, max_y=50):
     fig, ax = new_fig(1.0, figure_ratio=1/3)
 
     benchmark_names = []
@@ -198,7 +198,7 @@ def figure_vs_phase(vs_phases_names, max_y=25):
     plt.xticks(ind + bar_width / 2., benchmark_names, rotation=25)
     plt.legend(plts, vs_phases_names, loc="upper right")
     plt.grid(True, zorder=0, axis='y')
-    plt.ylabel("overhead [%]")
+    plt.ylabel(default_y_label)
     filename = ",".join(vs_phases_names)
     save_fig("vs-"+filename)
 
@@ -232,7 +232,10 @@ def autolabel(plt, rects):
         if height > plt.ylim()[1]:
             plt.text(rect.get_x()+rect.get_width()/2., plt.ylim()[1]*1.05, '%d'%int(height), ha='center', va='bottom')
 
+
 if __name__ == '__main__':
+
+    default_y_label = "overhead [\%]"
 
     if not os.path.exists(C.OUT_DIR):
         os.makedirs(C.OUT_DIR)
@@ -244,9 +247,9 @@ if __name__ == '__main__':
     rel_thesis_dir = "../master-thesis/fig/"
     rel_thesis_table_dir = "../master-thesis/tables/"
 
-    # figure_ov_compensation()
-    # figure_single_benchmark()
-    # figure_single_phase()
+    figure_ov_compensation()
+    figure_single_benchmark()
+    figure_single_phase()
 
     figure_vs_phase(["ss-all", "unw-all"])    # normal ss vs unw
     figure_vs_phase(["ss-all", "ss-cpd", "unw-all"], max_y=100)    # normal ss vs unw
