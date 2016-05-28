@@ -213,7 +213,7 @@ def figure_vs_phase(vs_phases_names, max_y=25):
 
 
 def create_latex_table_vs(benchmark_names, filename, vs_phases, vs_phases_names):
-    with open("../" + C.OUT_DIR + "/" + filename + ".txt", 'w') as out:
+    with open("../"+ rel_thesis_table_dir + filename + ".tex", 'w') as out:
         out.write("\\begin{adjustbox}{max width=\\textwidth,center}\n")
         out.write("\\begin{tabular}{ " + "".join("c" for x in range(len(benchmark_names) + 1)) + " }\n")
         out.write("\\hline\n")
@@ -242,16 +242,17 @@ if __name__ == '__main__':
     jsonData.save_file(ov_compensation_data_with_avg, "../spec-estimation-with-avg.json")
 
     rel_thesis_dir = "../master-thesis/fig/"
+    rel_thesis_table_dir = "../master-thesis/tables/"
 
-    figure_ov_compensation()
-    figure_single_benchmark()
-    figure_single_phase()
+    # figure_ov_compensation()
+    # figure_single_benchmark()
+    # figure_single_phase()
 
     figure_vs_phase(["ss-all", "unw-all"])    # normal ss vs unw
     figure_vs_phase(["ss-all", "ss-cpd", "unw-all"], max_y=100)    # normal ss vs unw
     figure_vs_phase(["ss-cpd", "ss-min", "ss-conj"])    # optimized ss
     figure_vs_phase(["unw-all", "unw-min"], max_y=50)    # optimized ss
-    figure_vs_phase(["ss-cpd", "unw-all", "hybrid"], max_y=100)    # hybrid vs normal
+    figure_vs_phase(["ss-cpd", "unw-all", "hybrid"], max_y=50)    # hybrid vs normal
     figure_vs_phase(["ss-cpd", "unw-min", "hybrid-st"], max_y=50) # with structure knowledge only
     figure_vs_phase(["hybrid", "hybrid-st"])
     figure_vs_phase(["ss-min", "unw-min", "hybrid", "hybrid-st"], max_y=50)  # hybrid vs optimized
