@@ -61,6 +61,7 @@ def new_fig(width, max_y=0, figure_ratio=ratio):
     plt.gcf().subplots_adjust(bottom=0.20)  # show x label
     plt.gcf().subplots_adjust(top=0.85)  # show title
     plt.gcf().subplots_adjust(left=0.15)    # show y label
+    plt.gcf().subplots_adjust(right=0.95)  # show y label
 
     pgf_with_latex["figure.figsize"] = size_of_figure(width, figure_ratio)
     # 	ax.set_axisbelow(True)
@@ -163,8 +164,12 @@ def figure_single_phase():
         plt.close()
 
 
-def figure_vs_phase(vs_phases_names, max_y=50):
-    fig, ax = new_fig(1.0, figure_ratio=1/3)
+def figure_vs_phase(vs_phases_names, max_y=50, fig_width=1.0, fig_ratio=1/3, adjust_bottom=0.20):
+    fig, ax = new_fig(fig_width, figure_ratio=fig_ratio)
+    plt.gcf().subplots_adjust(top=0.90)  # show title
+    plt.gcf().subplots_adjust(bottom=adjust_bottom)  # show x labels
+    plt.gcf().subplots_adjust(left=0.07)    # show y label
+    plt.gcf().subplots_adjust(right=0.98)
 
     benchmark_names = []
     for benchmark in ov_compensation_data_with_avg:
@@ -259,4 +264,5 @@ if __name__ == '__main__':
     figure_vs_phase(["ss-cpd", "unw-min", "hybrid-st"], max_y=50) # with structure knowledge only
     figure_vs_phase(["hybrid", "hybrid-st"])
     figure_vs_phase(["ss-min", "unw-min", "hybrid", "hybrid-st"], max_y=50)  # hybrid vs optimized
-    figure_vs_phase(['ss-all', 'ss-cpd', 'ss-min', 'ss-conj', 'unw-all', 'unw-min', 'hybrid-st', 'hybrid'])
+    figure_vs_phase(['ss-all', 'ss-cpd', 'ss-min', 'ss-conj', 'unw-all', 'unw-min', 'hybrid-st', 'hybrid'],
+                    fig_width=1.4, max_y=100, fig_ratio=0.66, adjust_bottom=0.1)
