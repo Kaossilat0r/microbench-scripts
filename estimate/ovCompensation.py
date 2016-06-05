@@ -188,8 +188,8 @@ def figure_vs_phase(vs_phases_names, max_y=50, fig_width=1.0, fig_ratio=1/3, adj
 
     len_vs = len(vs_phases_names)
 
-    ind = np.arange(len(benchmark_names)) + 0.25  # the x locations for the groups
-    bar_width = 0.5 / len_vs  # the width of the bars: can also be len(x) sequence
+    ind = np.arange(len(benchmark_names)) + 0.15  # the x locations for the groups
+    bar_width = 0.7 / len_vs  # the width of the bars: can also be len(x) sequence
 
     offset = 0
     plts = []
@@ -200,7 +200,7 @@ def figure_vs_phase(vs_phases_names, max_y=50, fig_width=1.0, fig_ratio=1/3, adj
         plts.append(p_tmp)
         offset += 1
 
-    plt.xticks(ind + bar_width / 2., benchmark_names, rotation=25)
+    plt.xticks(ind + bar_width*len(vs_phases_names) / 2., benchmark_names, rotation=25)
     plt.legend(plts, vs_phases_names, loc="upper right")
     plt.grid(True, zorder=0, axis='y')
     plt.ylabel(default_y_label)
@@ -235,7 +235,10 @@ def autolabel(plt, rects):
     for rect in rects:
         height = rect.get_height()
         if height > plt.ylim()[1]:
-            plt.text(rect.get_x()+rect.get_width()/2., plt.ylim()[1]*1.05, '%d'%int(height), ha='center', va='bottom')
+            label_x_base = rect.get_x()+rect.get_width()/2.
+            label_y_base = plt.ylim()[1]*1.05
+            plt.text(label_x_base, label_y_base,
+                     '%d'%int(height), ha='center', va='bottom')
 
 
 if __name__ == '__main__':
