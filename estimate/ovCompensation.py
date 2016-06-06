@@ -11,6 +11,7 @@ import numpy as np
 
 from estimate import jsonData
 from estimate import constants as C
+from estimate import pgfHack
 
 mpl.use('pgf')  # has to be set before the following import
 import matplotlib.pyplot as plt
@@ -75,12 +76,14 @@ def new_fig(width, max_y=0, figure_ratio=ratio):
     return fig, ax
 
 
-def save_fig(filename):
+def save_fig(filename, fix_pgf=False):
     save_prefix = '../{}{}/{}'.format(rel_thesis_dir, C.OUT_DIR, filename)
     print('saving {}'.format(save_prefix))
     plt.savefig(save_prefix + '.pdf')
     plt.savefig(save_prefix + '.pgf')
 
+    if fix_pgf:
+        pgfHack.fix_pgf_file(save_prefix + '.pgf')
 
 def figure_ov_compensation():
     fig, ax = new_fig(1.0, figure_ratio=1/3)
@@ -205,12 +208,12 @@ def figure_vs_phase(vs_phases_names, max_y=50, fig_width=1.0, fig_ratio=1/3, adj
     plt.grid(True, zorder=0, axis='y')
     plt.ylabel(default_y_label)
     filename = ",".join(vs_phases_names)
-    save_fig("vs-"+filename)
+    save_fig("vs_"+filename)
 
     plt.ylim(0,max_y)
     for p in plts:
         autolabel(plt, p)
-    save_fig(filename+"-"+str(max_y))
+    save_fig("vs_"+filename+"_"+str(max_y), fix_pgf=True)
 
     plt.close()
 
@@ -261,7 +264,7 @@ if __name__ == '__main__':
 
     figure_vs_phase(["ss-all", "unw-all"])    # normal ss vs unw
     figure_vs_phase(["ss-all", "ss-cpd", "unw-all"], max_y=100)    # normal ss vs unw
-    figure_vs_phase(["ss-cpd", "ss-min", "ss-conj"])    # optimized ss
+    figure_vs_phase(["ss-cpd", "ss-min", "ss-conj"], max_y=50)    # optimized ss
     figure_vs_phase(["unw-all", "unw-min"], max_y=50)    # optimized ss
     figure_vs_phase(["ss-cpd", "unw-all", "hybrid"], max_y=50)    # hybrid vs normal
     figure_vs_phase(["ss-cpd", "unw-min", "hybrid-st"], max_y=50) # with structure knowledge only
