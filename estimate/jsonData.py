@@ -73,7 +73,7 @@ def parse_benchmark_results(path, consider_sampling_costs=False):
     benchmark_results_with_avg = benchmark_results.copy()
 
     # add average values for all benchmarks
-    avg_benchmark = {C.PHASES: {}, C.NAME: ".AVG", C.PROF: 0.0, C.COMP: 0.0, C.REF: 0.0}
+    avg_benchmark = {C.PHASES: {}, C.NAME: ".average", C.PROF: 0.0, C.COMP: 0.0, C.REF: 0.0}
     for phase_name, phase in benchmark_results_with_avg[0][C.PHASES].items():
         avg_benchmark[C.PHASES][phase_name] = {}
         for ov_name in ov_names:

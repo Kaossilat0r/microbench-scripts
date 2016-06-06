@@ -222,7 +222,7 @@ def figure_vs_phase(vs_phases_names, max_y=50, fig_width=1.0, fig_ratio=1/3, adj
 
 def create_latex_table_vs(benchmark_names, filename, vs_phases, vs_phases_names):
     with open("../"+ rel_thesis_table_dir + filename + ".tex", 'w') as out:
-        out.write("\\begin{adjustbox}{max width=\\textwidth,center}\n")
+        # out.write("\\begin{adjustbox}{max width=\\textwidth,center}\n")
         out.write("\\begin{tabular}{ " + "".join("c" for x in range(len(benchmark_names) + 1)) + " }\n")
         out.write("\\hline\n")
         out.write(" & " + " & ".join("\\rot{" + b.split('.')[1] + "}" for b in benchmark_names) + " \\\\ \\hline\n")
@@ -230,7 +230,8 @@ def create_latex_table_vs(benchmark_names, filename, vs_phases, vs_phases_names)
             out.write(phase_name + " & " + " & ".join(
                 "{0:.1f}".format(p) for p in vs_phases[phase_name][C.PERCENT]) + " \\\\\n")
         out.write("\\hline\n")
-        out.write("\\end{tabular}\n\\end{adjustbox}\n")
+        out.write("\\end{tabular}\n")
+        # out.write("\\end{adjustbox}\n")
 
 
 def autolabel(plt, rects):
