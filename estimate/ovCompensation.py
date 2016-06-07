@@ -109,7 +109,7 @@ def figure_ov_compensation():
     plt.close()
 
 
-def figure_single_benchmark():
+def figure_single_benchmark(max_y=20):
 
     for benchmark in ov_compensation_data_with_avg:
         fig, ax = new_fig(0.5)
@@ -135,6 +135,14 @@ def figure_single_benchmark():
         plt.grid(True, zorder=0, axis='y')
         plt.ylabel(default_y_label)
         save_fig(benchmark_name)
+
+        plt.ylim(0, max_y)
+        autolabel(plt, p_unw, above_figure=False)
+        autolabel(plt, p_instr, above_figure=False)
+        save_fig(benchmark_name + "_" + str(max_y), fix_pgf=True)
+
+        plt.close()
+
         plt.close()
 
 
@@ -234,15 +242,17 @@ def create_latex_table_vs(benchmark_names, filename, vs_phases, vs_phases_names)
         # out.write("\\end{adjustbox}\n")
 
 
-def autolabel(plt, rects):
+def autolabel(plt, rects, above_figure=True):
     # attach some text labels
     for rect in rects:
         height = rect.get_height()
         if height > plt.ylim()[1]:
             label_x_base = rect.get_x()+rect.get_width()/2.
-            label_y_base = plt.ylim()[1]*1.05
-            plt.text(label_x_base, label_y_base,
-                     '%d'%int(height), ha='center', va='bottom')
+            if above_figure:
+                label_y_base = plt.ylim()[1]*1.05
+            else:
+                label_y_base = plt.ylim()[1]*0.9
+            plt.text(label_x_base, label_y_base, '%d'%int(height), ha='center', va='bottom', color='white', fontsize=8)
 
 
 if __name__ == '__main__':
