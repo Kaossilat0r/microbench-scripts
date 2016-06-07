@@ -250,9 +250,11 @@ def autolabel(plt, rects, above_figure=True):
             label_x_base = rect.get_x()+rect.get_width()/2.
             if above_figure:
                 label_y_base = plt.ylim()[1]*1.05
+                label_color, label_weight = 'black', 'normal'
             else:
-                label_y_base = plt.ylim()[1]*0.9
-            plt.text(label_x_base, label_y_base, '%d'%int(height), ha='center', va='bottom', color='white', fontsize=8)
+                label_y_base = plt.ylim()[1]*0.92
+                label_color, label_weight = 'white', 'bold'
+            plt.text(label_x_base, label_y_base, '%d'%int(height), ha='center', va='bottom', color=label_color, fontsize=8, weight=label_weight)
 
 
 if __name__ == '__main__':
