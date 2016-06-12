@@ -143,8 +143,6 @@ def figure_single_benchmark(max_y=20):
 
         plt.close()
 
-        plt.close()
-
 
 def figure_single_phase():
 
