@@ -6,7 +6,7 @@ PERCENT, UNW_PERCENT, INSTR_PERCENT = "percent", "unwPercent", "instrPercent"
 
 OUT_DIR = "out-estimate"
 
-PN = {
+PN_DEPRECATED = {
     'InstrumentAll': 'ss-all',
     'Instrument': 'ss-cpd',
     'MinInstrHeuristic': 'ss-min',
@@ -15,6 +15,22 @@ PN = {
     'LibUnwUnique': 'unw-min',
     'UnwStaticLeaf': 'hybrid-st',
     'UnwindSample': 'hybrid',
+
+    'OvCompensation': '',
+    'RemoveUnrelated': '',
+    'SanityCheck': '',
+    'Reset': ''
+}
+
+PN = {
+    'ss-all': 'ss-all',
+    'ss-cpd': 'ss-cpd',
+    'ss-min': 'ss-min',
+    'ss-conj': 'ss-conj',
+    'unw-all': 'unw-all',
+    'unw-min': 'unw-min',
+    'hybrid-st': 'hybrid-st',
+    'hybrid': 'hybrid',
 
     'OvCompensation': '',
     'RemoveUnrelated': '',
@@ -38,4 +54,4 @@ COL = {
 
 PHASE_ORDER = []
 for name in PHASE_ORDER_INTERNAL:
-    PHASE_ORDER.append(PN[name])
+    PHASE_ORDER.append(PN_DEPRECATED[name])

@@ -1,39 +1,39 @@
-####################### 447.dealII.clang.scorep #######################
+####################### 447.dealII.clang #######################
     numberOfCalls: 62744741639 | samplesPerSecond : 10000
     runtime: 17483.7 s (ref 26.5 s) | overhead: 17457.2 s or 6.588e+04 %
     smallestFunction : _ZNK9__gnu_cxx17__normal_iteratorIPK10HexahedronSt6vectorIS1_SaIS1_EEE4baseEv : 108.2ns | edgesWithZeroRuntime: 0
 
 ==OvCompensation==  
-	new runtime in seconds: 4307.31 | overcompensated: 0
+	new runtime in seconds: 4307.31 | overcompensated: 0 functions with 0 calls.
 ==RemoveUnrelated==  
-==LibUnwStandard==  
+==unw-all==  
    UNW 	 2643.11 % | unwound 5151 of 1556 conj. | unwindSamples: 43076491 | undwindOverhead: 700.424 s
  ---->	 2643.11 % | overallOverhead: 700.424 s
 ==Reset== Phase 
 
-==LibUnwUnique==  
+==unw-min==  
    UNW 	 1275.93 % | unwound 3819 of 1556 conj. | unwindSamples: 42953044 | undwindOverhead: 338.122 s
  ---->	 1275.93 % | overallOverhead: 338.122 s
 ==Reset== Phase 
 
-==InstrumentAll==  
+==ss-all==  
  INSTR 	1657.41  % | instr. 5167 of 5167 methods | instrCalls: 62744741497 | instrOverhead: 439.213 s
  ---->	1657.41  % | overallOverhead: 439.213 s
 ==SanityCheck==  
 ==Reset== Phase 
 
-==Instrument==  
+==ss-cpd==  
  INSTR 	439.729  % | instr. 2071 of 5167 methods | instrCalls: 16646882902 | instrOverhead: 116.528 s
  ---->	439.729  % | overallOverhead: 116.528 s
-==UnwindSample==  
- INSTR 	7.76611  % | instr. 625 of 5167 methods | instrCalls: 294002689 | instrOverhead: 2.05802 s
-   UNW 	238.625  % | unwound 1998 of 1556 conj. | unwindSamples: 21390410 | undwindOverhead: 63.2355 s
- ---->	246.391  % | overallOverhead: 65.2935 s
+==hybrid==  
+ INSTR 	12.4606  % | instr. 1092 of 5167 methods | instrCalls: 471721823 | instrOverhead: 3.30205 s
+   UNW 	95.8221  % | unwound 1000 of 1556 conj. | unwindSamples: 15252801 | undwindOverhead: 25.3929 s
+ ---->	108.283  % | overallOverhead: 28.6949 s
 ==SanityCheck==  
 ==Reset== Phase 
 
-==Instrument==  
-==UnwStaticLeaf==  
+==ss-cpd==  
+==hybrid-st==  
  INSTR 	128.393  % | instr. 1168 of 5167 methods | instrCalls: 4860598307 | instrOverhead: 34.0242 s
    UNW 	71.0602  % | unwound 665 of 1556 conj. | unwindSamples: 18830954 | undwindOverhead: 18.831 s
  ---->	199.453  % | overallOverhead: 52.8551 s
@@ -41,16 +41,16 @@
 ==Reset== Phase 
 
 ==RemoveUnrelated==  
-==Instrument==  
-==MinInstrHeuristic==  
+==ss-cpd==  
+==ss-min==  
  INSTR 	207.032  % | instr. 961 of 2921 methods | instrCalls: 7837650303 | instrOverhead: 54.8636 s
  ---->	207.032  % | overallOverhead: 54.8636 s
 	deleted 974 instrumentation marker(s)
 ==SanityCheck==  
 ==Reset== Phase 
 
-==Instrument==  
-==ConjInstrHeuristic==  
+==ss-cpd==  
+==ss-conj==  
  INSTR 	421.202  % | instr. 1943 of 2921 methods | instrCalls: 15945490692 | instrOverhead: 111.618 s
  ---->	421.202  % | overallOverhead: 111.618 s
 ==SanityCheck==  
