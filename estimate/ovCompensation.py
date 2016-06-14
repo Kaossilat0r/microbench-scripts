@@ -277,9 +277,9 @@ if __name__ == '__main__':
     figure_vs_phase(["ss-all", "ss-cpd", "unw-all"], max_y=100)     # normal ss vs unw
     figure_vs_phase(["ss-cpd", "ss-min", "ss-conj"], max_y=50)      # optimized ss
     figure_vs_phase(["unw-all", "unw-min"], max_y=50)               # optimized unw
-    figure_vs_phase(["ss-cpd", "unw-all", "hybrid"], max_y=50)      # hybrid vs normal (depr)
+    figure_vs_phase(["ss-cpd", "unw-all", "hybrid-dyn"], max_y=50)      # hybrid vs normal (depr)
     figure_vs_phase(["ss-cpd", "unw-min", "hybrid-st"], max_y=50)   # with structure info only
-    figure_vs_phase(["hybrid", "hybrid-st"])
-    figure_vs_phase(["ss-min", "unw-min", "hybrid"], max_y=50)      # with all info
-    figure_vs_phase(['ss-all', 'ss-cpd', 'ss-min', 'ss-conj', 'unw-all', 'unw-min', 'hybrid-st', 'hybrid'],
+    figure_vs_phase(["hybrid-dyn", "hybrid-st"])
+    figure_vs_phase(["ss-min", "unw-min", "hybrid-dyn"], max_y=50)      # with all info
+    figure_vs_phase(['ss-all', 'ss-cpd', 'ss-min', 'ss-conj', 'unw-all', 'unw-min', 'hybrid-st', 'hybrid-dyn'],
                     fig_width=1.4, max_y=100, fig_ratio=0.66, adjust_bottom=0.1)

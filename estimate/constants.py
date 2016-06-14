@@ -14,7 +14,7 @@ PN_DEPRECATED = {
     'LibUnwStandard': 'unw-all',
     'LibUnwUnique': 'unw-min',
     'UnwStaticLeaf': 'hybrid-st',
-    'UnwindSample': 'hybrid',
+    'UnwindSample': 'hybrid-dyn',
 
     'OvCompensation': '',
     'RemoveUnrelated': '',
@@ -30,7 +30,7 @@ PN = {
     'unw-all': 'unw-all',
     'unw-min': 'unw-min',
     'hybrid-st': 'hybrid-st',
-    'hybrid': 'hybrid',
+    'hybrid': 'hybrid-dyn',
 
     'OvCompensation': '',
     'RemoveUnrelated': '',
