@@ -48,7 +48,7 @@ COL = {
     'ss-conj': 'cyan',
     'unw-all': 'red',
     'unw-min': 'pink',
-    'hybrid': 'green',
+    'hybrid-dyn': 'green',
     'hybrid-st': 'yellow'
 }
 
