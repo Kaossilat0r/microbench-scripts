@@ -95,11 +95,11 @@ def figure_ov_compensation():
         values[C.COMP].append(v[C.COMP])
         values[C.REF].append(v[C.REF])
 
-    ind = np.arange(len(names))  # the x locations for the groups
+    ind = np.arange(len(names)) + 0.25  # the x locations for the groups
     bar_width = 0.5  # the width of the bars: can also be len(x) sequence
-    p_before = plt.bar(ind + 0.25, values[C.PROF], bar_width, color='y', zorder=3)
-    p_after = plt.bar(ind + 0.25, values[C.COMP], bar_width, color='r', zorder=3)
-    p_ref = plt.bar(ind + 0.25, values[C.REF], bar_width, color='b', zorder=3)
+    p_before = plt.bar(ind, values[C.PROF], bar_width, color='y', zorder=3)
+    p_after = plt.bar(ind, values[C.COMP], bar_width, color='r', zorder=3)
+    p_ref = plt.bar(ind, values[C.REF], bar_width, color='b', zorder=3)
     plt.xticks(ind + bar_width / 2., names, rotation=25)
     plt.legend((p_before, p_after, p_ref),
                ('before ov compensation', 'after ov compensation', 'ref runtime'), loc="upper right")
