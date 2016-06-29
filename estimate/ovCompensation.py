@@ -144,6 +144,54 @@ def figure_single_benchmark(max_y=20):
         plt.close()
 
 
+def figure_driver(benchmark_names, max_y=20):
+
+    for benchmark_name in benchmark_names:
+        benchmark = ov_compensation_data[benchmark_name]
+        fig, ax = new_fig(0.5)
+
+        BOTH, STDEV = "sampleAndInstr", "stdev"
+        phase_names, ov_percents = [], {C.INSTR_PERCENT: [], C.UNW_PERCENT: [], C.PAPI: [], C.DRIVER_PERCENT: [], BOTH : [], STDEV: [[],[]]}
+        for name in ["ss-cpd", "ss-min", "unw-all", "unw-min", "hybrid-dyn", "hybrid-st"]:
+            v = benchmark[C.PHASES][name]
+            if v[C.INSTR_PERCENT] + v[C.UNW_PERCENT] > 0:
+                phase_names.append(name)
+                ov_percents[C.INSTR_PERCENT].append(v[C.INSTR_PERCENT])
+                ov_percents[C.UNW_PERCENT].append(v[C.UNW_PERCENT])
+
+                avg_driver = jsonData.avg(v[C.DRIVER_PERCENT])
+                ov_percents[C.DRIVER_PERCENT].append(avg_driver)
+
+                max_driver, min_driver = max(v[C.DRIVER_PERCENT]), min(v[C.DRIVER_PERCENT])
+                ov_percents[STDEV][0].append(avg_driver-min_driver)
+                ov_percents[STDEV][1].append(max_driver-avg_driver)
+                ov_percents[C.PAPI].append(benchmark[C.PAPI]-benchmark[C.REF])
+                ov_percents[BOTH].append(ov_percents[C.PAPI][-1]+ov_percents[C.INSTR_PERCENT][-1])
+
+        ind = np.arange(len(phase_names)) + 0.25  # the x locations for the groups
+        bar_width = 0.25  # the width of the bars: can also be len(x) sequence
+        p_sample = plt.bar(ind, ov_percents[C.PAPI], bar_width, color='y', zorder=3)
+        p_instr = plt.bar(ind, ov_percents[C.INSTR_PERCENT], bar_width, color='b', zorder=3, bottom=ov_percents[C.PAPI])
+        p_unw = plt.bar(ind, ov_percents[C.UNW_PERCENT], bar_width, color='r', zorder=3, bottom=ov_percents[BOTH])
+        p_driver = plt.bar(ind+0.25, ov_percents[C.DRIVER_PERCENT], bar_width, color='g', zorder=3)
+        p_error = plt.errorbar(ind+0.25+bar_width/2, ov_percents[C.DRIVER_PERCENT], zorder=4, yerr=ov_percents[STDEV], fmt="none")
+
+        plt.title(benchmark_name)
+        plt.xticks(ind + bar_width / 2., phase_names, rotation=25)
+        plt.legend((p_unw, p_instr),
+                   ('unw', 'instr'), loc="upper right")
+        plt.grid(True, zorder=0, axis='y')
+        plt.ylabel(default_y_label)
+        save_fig("driver_" + benchmark_name)
+
+        plt.ylim(0, max_y)
+        autolabel(plt, p_unw, above_figure=False)
+        autolabel(plt, p_instr, above_figure=False)
+        save_fig("driver_" + benchmark_name + "_" + str(max_y), fix_pgf=True)
+
+        plt.close()
+
+
 def figure_single_phase():
 
     for phase_name in C.PHASE_ORDER:
@@ -263,23 +311,28 @@ if __name__ == '__main__':
         os.makedirs(C.OUT_DIR)
 
     ov_compensation_data, ov_compensation_data_with_avg = jsonData.parse_benchmark_results('../spec-output-stats', consider_sampling_costs=False)
+
+    ov_compensation_data = jsonData.parse_driver_results('../spec-driver-output', ov_compensation_data)
+
     jsonData.save_file(ov_compensation_data, "../spec-estimation.json")
     jsonData.save_file(ov_compensation_data_with_avg, "../spec-estimation-with-avg.json")
 
     rel_thesis_dir = "../master-thesis/fig/"
     rel_thesis_table_dir = "../master-thesis/tables/"
 
-    figure_ov_compensation()
-    figure_single_benchmark()
-    figure_single_phase()
+    figure_driver(["450.soplex","458.sjeng","453.povray", "473.astar"])
 
-    figure_vs_phase(["ss-all", "unw-all"])    # normal ss vs unw
-    figure_vs_phase(["ss-all", "ss-cpd", "unw-all"], max_y=100)     # normal ss vs unw
-    figure_vs_phase(["ss-cpd", "ss-min", "ss-conj"], max_y=50)      # optimized ss
-    figure_vs_phase(["unw-all", "unw-min"], max_y=50)               # optimized unw
-    figure_vs_phase(["ss-cpd", "unw-all", "hybrid-dyn"], max_y=50)      # hybrid vs normal (depr)
-    figure_vs_phase(["ss-cpd", "unw-min", "hybrid-st"], max_y=50)   # with structure info only
-    figure_vs_phase(["hybrid-dyn", "hybrid-st"])
-    figure_vs_phase(["ss-min", "unw-min", "hybrid-dyn"], max_y=50)      # with all info
-    figure_vs_phase(['ss-all', 'ss-cpd', 'ss-min', 'ss-conj', 'unw-all', 'unw-min', 'hybrid-st', 'hybrid-dyn'],
-                    fig_width=1.4, max_y=100, fig_ratio=0.66, adjust_bottom=0.1)
+    # figure_ov_compensation()
+    # figure_single_benchmark()
+    # figure_single_phase()
+    #
+    # figure_vs_phase(["ss-all", "unw-all"])    # normal ss vs unw
+    # figure_vs_phase(["ss-all", "ss-cpd", "unw-all"], max_y=100)     # normal ss vs unw
+    # figure_vs_phase(["ss-cpd", "ss-min", "ss-conj"], max_y=50)      # optimized ss
+    # figure_vs_phase(["unw-all", "unw-min"], max_y=50)               # optimized unw
+    # figure_vs_phase(["ss-cpd", "unw-all", "hybrid-dyn"], max_y=50)      # hybrid vs normal (depr)
+    # figure_vs_phase(["ss-cpd", "unw-min", "hybrid-st"], max_y=50)   # with structure info only
+    # figure_vs_phase(["hybrid-dyn", "hybrid-st"])
+    # figure_vs_phase(["ss-min", "unw-min", "hybrid-dyn"], max_y=50)      # with all info
+    # figure_vs_phase(['ss-all', 'ss-cpd', 'ss-min', 'ss-conj', 'unw-all', 'unw-min', 'hybrid-st', 'hybrid-dyn'],
+    #                 fig_width=1.4, max_y=100, fig_ratio=0.66, adjust_bottom=0.1)

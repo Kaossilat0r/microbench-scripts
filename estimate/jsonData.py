@@ -6,6 +6,8 @@ Created on 08.05.2016
 
 import json
 import glob
+import os
+
 from estimate import constants as C
 
 ov_names = ["seconds", "percent", "unwPercent", "unwSeconds", "instrPercent", "instrSeconds"]
@@ -50,8 +52,8 @@ def parse_benchmark_results(path, consider_sampling_costs=False):
                 ov_percent = float(line.split()[1])
                 ov_seconds = float(line.split()[-2])
                 if consider_sampling_costs:
-                    phase["percent"] = ov_percent + C.SAMPLE_PERCENT
-                    phase["seconds"] = ov_seconds + C.SAMPLE_PERCENT * benchmark[C.REF]
+                    phase["percent"] = ov_percent + C.GLOBAL_SAMPLE_PERCENT
+                    phase["seconds"] = ov_seconds + C.GLOBAL_SAMPLE_PERCENT * benchmark[C.REF]
                 else:
                     phase["percent"] = ov_percent
                     phase["seconds"] = ov_seconds
@@ -98,6 +100,49 @@ def parse_benchmark_results(path, consider_sampling_costs=False):
     return benchmark_results, benchmark_results_with_avg
 
 
+def parse_driver_results(path, benchmark_results):
+
+    for filename in glob.iglob(path + '/*_vanilla'):
+        cols = os.path.basename(filename).split('_')
+        benchmark_name = cols[0]
+
+        if benchmark_name in benchmark_results:
+            benchmark_results[benchmark_name][C.REF] = avg(parse_runtimes(filename))
+
+    for filename in glob.iglob(path + '/*_papi'):
+        cols = os.path.basename(filename).split('_')
+        benchmark_name = cols[0]
+
+        if benchmark_name in benchmark_results:
+            benchmark_results[benchmark_name][C.PAPI] = avg(parse_runtimes(filename))
+
+    for filename in glob.iglob(path + '/*_*-*'):
+
+        cols = os.path.basename(filename).split('_')
+        benchmark_name, phase_name = cols[0], cols[1]
+
+        runtime_no_handler = benchmark_results[benchmark_name][C.PAPI]
+        runtime_ref = benchmark_results[benchmark_name][C.REF]
+        runtime_seconds_data = parse_runtimes(filename)
+        overhead_seconds_data = [(x-runtime_ref) for x in runtime_seconds_data]
+        benchmark_results[benchmark_name][C.PHASES][phase_name][C.DRIVER_SEC] = overhead_seconds_data
+        benchmark_results[benchmark_name][C.PHASES][phase_name][C.DRIVER_PERCENT] = [(x/runtime_ref*100.) for x in overhead_seconds_data]
+
+    return benchmark_results
+
+def avg(list):
+    return sum(list) / float(len(list))
+
+def parse_runtimes(filename):
+    runtime_seconds_data = []
+
+    in_file = open(filename)
+    for line in in_file:
+        if "target | " in line:
+            runtime = line.split(' ')[8]
+            runtime_seconds_data.append(float(runtime))
+    return runtime_seconds_data
+
 def save_file(benchmark_dict, filename):
     with open(filename, 'w') as out_file:
         json.dump(benchmark_dict, out_file, indent=1, sort_keys=True)
@@ -112,5 +157,7 @@ if __name__ == '__main__':
 
     # 	testJson()
     benchmarks = parse_benchmark_results('../spec-output-stats')
+
+    parse_driver_results('../spec-driver-output')
 
     save_file(benchmarks, '../spec-estimations.json')
