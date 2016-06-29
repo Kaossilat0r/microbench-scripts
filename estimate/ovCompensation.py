@@ -130,8 +130,7 @@ def figure_single_benchmark(max_y=20):
 
         plt.title(benchmark_name)
         plt.xticks(ind + bar_width / 2., phase_names, rotation=25)
-        plt.legend((p_unw, p_instr),
-                   ('unw', 'instr'), loc="upper right")
+        plt.legend((p_unw, p_instr), ('unw', 'instr'), loc="upper right")
         plt.grid(True, zorder=0, axis='y')
         plt.ylabel(default_y_label)
         save_fig(benchmark_name)
@@ -168,6 +167,8 @@ def figure_driver(benchmark_names, max_y=20):
                 ov_percents[C.PAPI].append(benchmark[C.PAPI_OVERHEAD_PERCENT])
                 ov_percents[BOTH].append(ov_percents[C.PAPI][-1]+ov_percents[C.INSTR_PERCENT][-1])
 
+        plt.gcf().subplots_adjust(top=0.8)  # show title
+
         ind = np.arange(len(phase_names)) + 0.25  # the x locations for the groups
         bar_width = 0.25  # the width of the bars: can also be len(x) sequence
         p_sample = plt.bar(ind, ov_percents[C.PAPI], bar_width, color='y', zorder=3)
@@ -176,19 +177,22 @@ def figure_driver(benchmark_names, max_y=20):
         p_driver = plt.bar(ind+0.25, ov_percents[C.DRIVER_PERCENT], bar_width, color='g', zorder=3)
         p_error = plt.errorbar(ind+0.25+bar_width/2, ov_percents[C.DRIVER_PERCENT], zorder=4, yerr=ov_percents[STDEV], fmt="none")
 
-        plt.title(benchmark_name)
+        plt.title(benchmark_name, y=1.15)   # move title where we can se it
         plt.xticks(ind + bar_width, phase_names, rotation=25)
-        first_legend = plt.legend((p_unw, p_instr), ('unw', 'instr'), loc="upper center")
-        plt.gca().add_artist(first_legend)
-        plt.legend((p_sample, p_driver), ('sampling', 'driver'), loc="upper right")
+        # first_legend = plt.legend((p_unw, p_instr), ('unw', 'instr'), loc="upper center")
+        # plt.gca().add_artist(first_legend)
+        # plt.legend((p_sample, p_driver), ('sampling', 'driver'), loc="upper right")
+        plt.legend((p_sample, p_unw, p_instr, p_driver), ('sampling','instr', 'unw', 'driver'), bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
+                   ncol=4, mode="expand", borderaxespad=0.)
+
         plt.grid(True, zorder=0, axis='y')
         plt.ylabel(default_y_label)
         save_fig("driver_" + benchmark_name)
 
-        plt.ylim(0, max_y)
-        autolabel(plt, p_unw, above_figure=False)
-        autolabel(plt, p_instr, above_figure=False)
-        save_fig("driver_" + benchmark_name + "_" + str(max_y), fix_pgf=True)
+        # plt.ylim(0, max_y)
+        # autolabel(plt, p_unw, above_figure=False)
+        # autolabel(plt, p_instr, above_figure=False)
+        # save_fig("driver_" + benchmark_name + "_" + str(max_y), fix_pgf=True)
 
         plt.close()
 
@@ -303,7 +307,6 @@ def autolabel(plt, rects, above_figure=True):
                 label_color, label_weight = 'white', 'bold'
             plt.text(label_x_base, label_y_base, '%d'%int(height), ha='center', va='bottom', color=label_color, fontsize=8, weight=label_weight)
 
-
 if __name__ == '__main__':
 
     default_y_label = "overhead [\%]"
@@ -321,7 +324,10 @@ if __name__ == '__main__':
     rel_thesis_dir = "../master-thesis/fig/"
     rel_thesis_table_dir = "../master-thesis/tables/"
 
-    figure_driver(["450.soplex","458.sjeng","453.povray", "473.astar", "447.dealII"])
+    figure_driver(['453.povray', '450.soplex', '444.namd', '447.dealII', '462.libquantum',
+                   '458.sjeng', '473.astar', '482.sphinx3', '464.h264ref',
+                   # '429.mcf',
+                   '433.milc', '470.lbm', '456.hmmer', '403.gcc'])
 
     figure_ov_compensation()
     figure_single_benchmark()
