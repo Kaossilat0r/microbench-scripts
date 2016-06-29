@@ -12,7 +12,7 @@ ov_names = ["seconds", "percent", "unwPercent", "unwSeconds", "instrPercent", "i
 
 # benchmarks -> phases -> ov-source -> ov-percent/seconds
 def parse_benchmark_results(path, consider_sampling_costs=False):
-    benchmark_results = []
+    benchmark_results = {}
     for filename in glob.iglob(path + '/*.log'):
 
         in_file = open(filename)
@@ -20,8 +20,8 @@ def parse_benchmark_results(path, consider_sampling_costs=False):
             if "###" in line:
                 benchmark_name = line.split()[1]
                 benchmark_name = '.'.join(benchmark_name.split('.')[:2])    # name till second dot
-                benchmark = {C.PHASES: {}, C.NAME: benchmark_name}
-                benchmark_results.append(benchmark)
+                benchmark = {C.PHASES: {}}
+                benchmark_results[benchmark_name] = benchmark
                 phases = benchmark[C.PHASES]
 
             if "runtime:" in line:
@@ -73,12 +73,12 @@ def parse_benchmark_results(path, consider_sampling_costs=False):
     benchmark_results_with_avg = benchmark_results.copy()
 
     # add average values for all benchmarks
-    avg_benchmark = {C.PHASES: {}, C.NAME: ".average", C.PROF: 0.0, C.COMP: 0.0, C.REF: 0.0}
-    for phase_name, phase in benchmark_results_with_avg[0][C.PHASES].items():
+    avg_benchmark = {C.PHASES: {}, C.PROF: 0.0, C.COMP: 0.0, C.REF: 0.0}
+    for phase_name, phase in benchmark_results_with_avg["462.libquantum"][C.PHASES].items():
         avg_benchmark[C.PHASES][phase_name] = {}
         for ov_name in ov_names:
             avg_benchmark[C.PHASES][phase_name][ov_name] = 0.0
-    for benchmark in benchmark_results_with_avg:
+    for benchmark in benchmark_results_with_avg.values():
         avg_benchmark[C.REF] += benchmark[C.REF]
         avg_benchmark[C.COMP] += benchmark[C.COMP]
         avg_benchmark[C.PROF] += benchmark[C.PROF]
@@ -92,7 +92,7 @@ def parse_benchmark_results(path, consider_sampling_costs=False):
         for ov_name, ov_value in phase.items():
             avg_benchmark[C.PHASES][phase_name][ov_name] /= len(benchmark_results)
 
-    benchmark_results_with_avg.append(avg_benchmark)
+    benchmark_results_with_avg["average"] = avg_benchmark
 
     # print(benchmark_results)
     return benchmark_results, benchmark_results_with_avg

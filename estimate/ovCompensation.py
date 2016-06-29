@@ -85,12 +85,13 @@ def save_fig(filename, fix_pgf=False):
     if fix_pgf:
         pgfHack.fix_pgf_file(save_prefix + '.pgf')
 
+
 def figure_ov_compensation():
     fig, ax = new_fig(1.0, figure_ratio=1/3)
 
     names, values = [], {C.REF: [], C.COMP: [], C.PROF: []}
-    for v in ov_compensation_data_with_avg:
-        names.append(v[C.NAME])
+    for name, v in sorted(ov_compensation_data_with_avg.items()):
+        names.append(name)
         values[C.PROF].append(v[C.PROF])
         values[C.COMP].append(v[C.COMP])
         values[C.REF].append(v[C.REF])
@@ -111,10 +112,9 @@ def figure_ov_compensation():
 
 def figure_single_benchmark(max_y=20):
 
-    for benchmark in ov_compensation_data_with_avg:
+    for benchmark_name, benchmark in sorted(ov_compensation_data_with_avg.items()):
         fig, ax = new_fig(0.5)
 
-        benchmark_name = benchmark[C.NAME]
         phase_names, ov_percents = [], {C.INSTR_PERCENT: [], C.UNW_PERCENT: []}
         for name in C.PHASE_ORDER:
             v = benchmark[C.PHASES][name]
@@ -150,8 +150,8 @@ def figure_single_phase():
         fig, ax = new_fig(1.0)
 
         benchmark_names, values = [], {C.INSTR_PERCENT: [], C.UNW_PERCENT: [], C.PERCENT: []}
-        for benchmark in ov_compensation_data_with_avg:
-            benchmark_names.append(benchmark[C.NAME])
+        for benchmark_name, benchmark in sorted(ov_compensation_data_with_avg.items()):
+            benchmark_names.append(benchmark_name)
 
             ov_data = benchmark[C.PHASES][phase_name]
             values[C.INSTR_PERCENT].append(ov_data[C.INSTR_PERCENT])
@@ -181,14 +181,14 @@ def figure_vs_phase(vs_phases_names, max_y=50, fig_width=1.0, fig_ratio=1/3, adj
     plt.gcf().subplots_adjust(right=0.98)
 
     benchmark_names = []
-    for benchmark in ov_compensation_data_with_avg:
-        benchmark_names.append(benchmark[C.NAME])
+    for benchmark_name, benchmark in sorted(ov_compensation_data_with_avg.items()):
+        benchmark_names.append(benchmark_name)
 
     vs_phases = {}
     for phase_name in vs_phases_names:
 
         vs_phases[phase_name] = {C.INSTR_PERCENT: [], C.UNW_PERCENT: [], C.PERCENT: []}
-        for benchmark in ov_compensation_data_with_avg:
+        for benchmark_name, benchmark in sorted(ov_compensation_data_with_avg.items()):
             ov_data = benchmark[C.PHASES][phase_name]
             values = vs_phases[phase_name]
             values[C.INSTR_PERCENT].append(ov_data[C.INSTR_PERCENT])
@@ -231,7 +231,7 @@ def create_latex_table_vs(benchmark_names, filename, vs_phases, vs_phases_names)
         # out.write("\\begin{adjustbox}{max width=\\textwidth,center}\n")
         out.write("\\begin{tabular}{ " + "".join("c" for x in range(len(benchmark_names) + 1)) + " }\n")
         out.write("\\hline\n")
-        out.write(" & " + " & ".join("\\rot{" + b.split('.')[1] + "}" for b in benchmark_names) + " \\\\ \\hline\n")
+        out.write(" & " + " & ".join("\\rot{" + b.split('.')[-1] + "}" for b in benchmark_names) + " \\\\ \\hline\n")
         for phase_name in vs_phases_names:
             out.write(phase_name + " & " + " & ".join(
                 "{0:.1f}".format(p) for p in vs_phases[phase_name][C.PERCENT]) + " \\\\\n")
