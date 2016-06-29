@@ -30,7 +30,7 @@ PN = {
     'unw-all': 'unw-all',
     'unw-min': 'unw-min',
     'hybrid-st': 'hybrid-st',
-    'hybrid': 'hybrid-dyn',
+    'hybrid-dyn': 'hybrid-dyn',
 
     'OvCompensation': '',
     'RemoveUnrelated': '',
