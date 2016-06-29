@@ -165,7 +165,7 @@ def figure_driver(benchmark_names, max_y=20):
                 max_driver, min_driver = max(v[C.DRIVER_PERCENT]), min(v[C.DRIVER_PERCENT])
                 ov_percents[STDEV][0].append(avg_driver-min_driver)
                 ov_percents[STDEV][1].append(max_driver-avg_driver)
-                ov_percents[C.PAPI].append(benchmark[C.PAPI]-benchmark[C.REF])
+                ov_percents[C.PAPI].append(benchmark[C.PAPI_OVERHEAD_PERCENT])
                 ov_percents[BOTH].append(ov_percents[C.PAPI][-1]+ov_percents[C.INSTR_PERCENT][-1])
 
         ind = np.arange(len(phase_names)) + 0.25  # the x locations for the groups
@@ -177,9 +177,10 @@ def figure_driver(benchmark_names, max_y=20):
         p_error = plt.errorbar(ind+0.25+bar_width/2, ov_percents[C.DRIVER_PERCENT], zorder=4, yerr=ov_percents[STDEV], fmt="none")
 
         plt.title(benchmark_name)
-        plt.xticks(ind + bar_width / 2., phase_names, rotation=25)
-        plt.legend((p_unw, p_instr),
-                   ('unw', 'instr'), loc="upper right")
+        plt.xticks(ind + bar_width, phase_names, rotation=25)
+        first_legend = plt.legend((p_unw, p_instr), ('unw', 'instr'), loc="upper center")
+        plt.gca().add_artist(first_legend)
+        plt.legend((p_sample, p_driver), ('sampling', 'driver'), loc="upper right")
         plt.grid(True, zorder=0, axis='y')
         plt.ylabel(default_y_label)
         save_fig("driver_" + benchmark_name)
@@ -320,19 +321,19 @@ if __name__ == '__main__':
     rel_thesis_dir = "../master-thesis/fig/"
     rel_thesis_table_dir = "../master-thesis/tables/"
 
-    figure_driver(["450.soplex","458.sjeng","453.povray", "473.astar"])
+    figure_driver(["450.soplex","458.sjeng","453.povray", "473.astar", "447.dealII"])
 
-    # figure_ov_compensation()
-    # figure_single_benchmark()
-    # figure_single_phase()
-    #
-    # figure_vs_phase(["ss-all", "unw-all"])    # normal ss vs unw
-    # figure_vs_phase(["ss-all", "ss-cpd", "unw-all"], max_y=100)     # normal ss vs unw
-    # figure_vs_phase(["ss-cpd", "ss-min", "ss-conj"], max_y=50)      # optimized ss
-    # figure_vs_phase(["unw-all", "unw-min"], max_y=50)               # optimized unw
-    # figure_vs_phase(["ss-cpd", "unw-all", "hybrid-dyn"], max_y=50)      # hybrid vs normal (depr)
-    # figure_vs_phase(["ss-cpd", "unw-min", "hybrid-st"], max_y=50)   # with structure info only
-    # figure_vs_phase(["hybrid-dyn", "hybrid-st"])
-    # figure_vs_phase(["ss-min", "unw-min", "hybrid-dyn"], max_y=50)      # with all info
-    # figure_vs_phase(['ss-all', 'ss-cpd', 'ss-min', 'ss-conj', 'unw-all', 'unw-min', 'hybrid-st', 'hybrid-dyn'],
-    #                 fig_width=1.4, max_y=100, fig_ratio=0.66, adjust_bottom=0.1)
+    figure_ov_compensation()
+    figure_single_benchmark()
+    figure_single_phase()
+
+    figure_vs_phase(["ss-all", "unw-all"])    # normal ss vs unw
+    figure_vs_phase(["ss-all", "ss-cpd", "unw-all"], max_y=100)     # normal ss vs unw
+    figure_vs_phase(["ss-cpd", "ss-min", "ss-conj"], max_y=50)      # optimized ss
+    figure_vs_phase(["unw-all", "unw-min"], max_y=50)               # optimized unw
+    figure_vs_phase(["ss-cpd", "unw-all", "hybrid-dyn"], max_y=50)      # hybrid vs normal (depr)
+    figure_vs_phase(["ss-cpd", "unw-min", "hybrid-st"], max_y=50)   # with structure info only
+    figure_vs_phase(["hybrid-dyn", "hybrid-st"])
+    figure_vs_phase(["ss-min", "unw-min", "hybrid-dyn"], max_y=50)      # with all info
+    figure_vs_phase(['ss-all', 'ss-cpd', 'ss-min', 'ss-conj', 'unw-all', 'unw-min', 'hybrid-st', 'hybrid-dyn'],
+                    fig_width=1.4, max_y=100, fig_ratio=0.66, adjust_bottom=0.1)

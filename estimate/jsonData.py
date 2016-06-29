@@ -114,7 +114,10 @@ def parse_driver_results(path, benchmark_results):
         benchmark_name = cols[0]
 
         if benchmark_name in benchmark_results:
-            benchmark_results[benchmark_name][C.PAPI] = avg(parse_runtimes(filename))
+            runtime_papi = avg(parse_runtimes(filename))
+            runtime_ref = benchmark_results[benchmark_name][C.REF]
+            benchmark_results[benchmark_name][C.PAPI] = runtime_papi
+            benchmark_results[benchmark_name][C.PAPI_OVERHEAD_PERCENT] = (runtime_papi-runtime_ref)/runtime_ref*100.
 
     for filename in glob.iglob(path + '/*_*-*'):
 
