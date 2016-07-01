@@ -325,8 +325,7 @@ if __name__ == '__main__':
     rel_thesis_table_dir = "../master-thesis/tables/"
 
     figure_driver(['453.povray', '450.soplex', '444.namd', '447.dealII', '462.libquantum',
-                   '458.sjeng', '473.astar', '482.sphinx3', '464.h264ref',
-                   # '429.mcf',
+                   '458.sjeng', '473.astar', '482.sphinx3', '464.h264ref', '429.mcf',
                    '433.milc', '470.lbm', '456.hmmer', '403.gcc'])
 
     figure_ov_compensation()
