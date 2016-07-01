@@ -263,7 +263,8 @@ def figure_vs_phase(vs_phases_names, max_y=50, fig_width=1.0, fig_ratio=1/3, adj
         offset += 1
 
     plt.xticks(ind + bar_width*len(vs_phases_names) / 2., benchmark_names, rotation=25)
-    plt.legend(plts, vs_phases_names, loc="upper right")
+    plt.xlim(0, len(benchmark_names))
+    plt.legend(plts, vs_phases_names, loc="best")
     plt.grid(True, zorder=0, axis='y')
     plt.ylabel(default_y_label)
     filename = ",".join(vs_phases_names)
@@ -300,12 +301,13 @@ def autolabel(plt, rects, above_figure=True):
         if height > plt.ylim()[1]:
             label_x_base = rect.get_x()+rect.get_width()/2.
             if above_figure:
-                label_y_base = plt.ylim()[1]*1.05
-                label_color, label_weight = 'black', 'normal'
+                label_y_base = plt.ylim()[1]*1.02
+                label_color, label_weight, label_rotation, label_fontsize = 'black', 'normal', 45, 6
             else:
                 label_y_base = plt.ylim()[1]*0.92
-                label_color, label_weight = 'white', 'bold'
-            plt.text(label_x_base, label_y_base, '%d'%int(height), ha='center', va='bottom', color=label_color, fontsize=8, weight=label_weight)
+                label_color, label_weight, label_rotation, label_fontsize = 'white', 'bold', 0, 8
+            plt.text(label_x_base, label_y_base, '%d'%int(height), ha='center', va='bottom', color=label_color,
+                     fontsize=label_fontsize, weight=label_weight, rotation=label_rotation)
 
 if __name__ == '__main__':
 
