@@ -53,6 +53,8 @@ COL = {
     'hybrid-st': 'yellow'
 }
 
+DRIVER_PHASES = ["ss-cpd", "ss-min", "unw-all", "unw-min", "hybrid-st", "hybrid-dyn"]
+
 PHASE_ORDER = []
 for name in PHASE_ORDER_INTERNAL:
     PHASE_ORDER.append(PN_DEPRECATED[name])

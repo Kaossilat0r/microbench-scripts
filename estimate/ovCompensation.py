@@ -146,12 +146,12 @@ def figure_single_benchmark(max_y=20):
 def figure_driver(benchmark_names, max_y=20):
 
     for benchmark_name in benchmark_names:
-        benchmark = ov_compensation_data[benchmark_name]
+        benchmark = ov_compensation_data_with_avg[benchmark_name]
         fig, ax = new_fig(0.5)
 
         BOTH, STDEV = "sampleAndInstr", "stdev"
         phase_names, ov_percents = [], {C.INSTR_PERCENT: [], C.UNW_PERCENT: [], C.PAPI: [], C.DRIVER_PERCENT: [], BOTH : [], STDEV: [[],[]]}
-        for name in ["ss-cpd", "ss-min", "unw-all", "unw-min", "hybrid-dyn", "hybrid-st"]:
+        for name in C.DRIVER_PHASES:
             v = benchmark[C.PHASES][name]
             if v[C.INSTR_PERCENT] + v[C.UNW_PERCENT] > 0:
                 phase_names.append(name)
@@ -319,7 +319,7 @@ if __name__ == '__main__':
 
     ov_compensation_data, ov_compensation_data_with_avg = jsonData.parse_benchmark_results('../spec-output-stats', consider_sampling_costs=False)
 
-    ov_compensation_data = jsonData.parse_driver_results('../spec-driver-output', ov_compensation_data)
+    # ov_compensation_data = jsonData.parse_driver_results('../spec-driver-output', ov_compensation_data)
 
     jsonData.save_file(ov_compensation_data, "../spec-estimation.json")
     jsonData.save_file(ov_compensation_data_with_avg, "../spec-estimation-with-avg.json")
@@ -329,7 +329,7 @@ if __name__ == '__main__':
 
     figure_driver(['453.povray', '450.soplex', '444.namd', '447.dealII', '462.libquantum',
                    '458.sjeng', '473.astar', '482.sphinx3', '464.h264ref', '429.mcf',
-                   '433.milc', '470.lbm', '456.hmmer', '403.gcc'])
+                   '433.milc', '470.lbm', '456.hmmer', '403.gcc', 'average'])
 
     figure_ov_compensation()
     figure_single_benchmark()

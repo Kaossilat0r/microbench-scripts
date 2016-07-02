@@ -72,33 +72,48 @@ def parse_benchmark_results(path, consider_sampling_costs=False):
                 phase["instrPercent"] = ov_percent
                 phase["instrSeconds"] = ov_seconds
 
+    benchmark_results = parse_driver_results('../spec-driver-output', benchmark_results)
+
     benchmark_results_with_avg = benchmark_results.copy()
 
     # add average values for all benchmarks
-    avg_benchmark = {C.PHASES: {}, C.PROF: 0.0, C.COMP: 0.0, C.REF: 0.0}
+    top_level_fields = [C.PROF, C.COMP, C.REF, C.PAPI, C.PAPI_OVERHEAD_PERCENT]
+    avg_benchmark = {C.PHASES: {}}
+    for field in top_level_fields:
+        avg_benchmark[field] = 0.0
+
     for phase_name, phase in benchmark_results_with_avg["462.libquantum"][C.PHASES].items():
         avg_benchmark[C.PHASES][phase_name] = {}
         for ov_name in ov_names:
             avg_benchmark[C.PHASES][phase_name][ov_name] = 0.0
+        if phase_name in C.DRIVER_PHASES:
+            avg_benchmark[C.PHASES][phase_name][C.DRIVER_PERCENT] = []
+
     length = 0
     for benchmark_name, benchmark in benchmark_results_with_avg.items():
 
         if benchmark_name == '447.dealII':
-            continue
+            continue    # skip this benchmark
         length += 1
 
-        avg_benchmark[C.REF] += benchmark[C.REF]
-        avg_benchmark[C.COMP] += benchmark[C.COMP]
-        avg_benchmark[C.PROF] += benchmark[C.PROF]
+        for field in top_level_fields:
+            avg_benchmark[field] += benchmark[field]
+
         for phase_name, phase in benchmark[C.PHASES].items():
             for ov_name, ov_value in phase.items():
-                avg_benchmark[C.PHASES][phase_name][ov_name] += phase[ov_name]
+                if ov_name != C.DRIVER_PERCENT and ov_name != C.DRIVER_SEC:
+                    avg_benchmark[C.PHASES][phase_name][ov_name] += phase[ov_name]
+            if phase_name in C.DRIVER_PHASES:
+                avg_benchmark[C.PHASES][phase_name][C.DRIVER_PERCENT].append(avg(phase[C.DRIVER_PERCENT]))
 
-    for runtime_name in [C.PROF, C.COMP, C.REF]:
-        avg_benchmark[runtime_name] /= length
+    for field in top_level_fields:
+        avg_benchmark[field] /= length
     for phase_name, phase in avg_benchmark[C.PHASES].items():
         for ov_name, ov_value in phase.items():
-            avg_benchmark[C.PHASES][phase_name][ov_name] /= length
+            if ov_name != C.DRIVER_PERCENT and ov_name != C.DRIVER_SEC:
+                avg_benchmark[C.PHASES][phase_name][ov_name] /= length
+        if phase_name in C.DRIVER_PHASES:
+            avg_benchmark[C.PHASES][phase_name][C.DRIVER_PERCENT] = [avg(avg_benchmark[C.PHASES][phase_name][C.DRIVER_PERCENT])]
 
     benchmark_results_with_avg["average"] = avg_benchmark
 
