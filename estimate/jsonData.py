@@ -80,7 +80,13 @@ def parse_benchmark_results(path, consider_sampling_costs=False):
         avg_benchmark[C.PHASES][phase_name] = {}
         for ov_name in ov_names:
             avg_benchmark[C.PHASES][phase_name][ov_name] = 0.0
-    for benchmark in benchmark_results_with_avg.values():
+    length = 0
+    for benchmark_name, benchmark in benchmark_results_with_avg.items():
+
+        if benchmark_name == '447.dealII':
+            continue
+        length += 1
+
         avg_benchmark[C.REF] += benchmark[C.REF]
         avg_benchmark[C.COMP] += benchmark[C.COMP]
         avg_benchmark[C.PROF] += benchmark[C.PROF]
@@ -89,10 +95,10 @@ def parse_benchmark_results(path, consider_sampling_costs=False):
                 avg_benchmark[C.PHASES][phase_name][ov_name] += phase[ov_name]
 
     for runtime_name in [C.PROF, C.COMP, C.REF]:
-        avg_benchmark[runtime_name] /= len(benchmark_results)
+        avg_benchmark[runtime_name] /= length
     for phase_name, phase in avg_benchmark[C.PHASES].items():
         for ov_name, ov_value in phase.items():
-            avg_benchmark[C.PHASES][phase_name][ov_name] /= len(benchmark_results)
+            avg_benchmark[C.PHASES][phase_name][ov_name] /= length
 
     benchmark_results_with_avg["average"] = avg_benchmark
 

@@ -167,7 +167,8 @@ def figure_driver(benchmark_names, max_y=20):
                 ov_percents[C.PAPI].append(benchmark[C.PAPI_OVERHEAD_PERCENT])
                 ov_percents[BOTH].append(ov_percents[C.PAPI][-1]+ov_percents[C.INSTR_PERCENT][-1])
 
-        plt.gcf().subplots_adjust(top=0.8)  # show title
+        plt.gcf().subplots_adjust(top=0.81)  # show title
+        plt.gcf().subplots_adjust(bottom=0.15)  # show title
 
         ind = np.arange(len(phase_names)) + 0.25  # the x locations for the groups
         bar_width = 0.25  # the width of the bars: can also be len(x) sequence
@@ -178,7 +179,7 @@ def figure_driver(benchmark_names, max_y=20):
         p_error = plt.errorbar(ind+0.25+bar_width/2, ov_percents[C.DRIVER_PERCENT], zorder=4, yerr=ov_percents[STDEV], fmt="none")
 
         plt.title(benchmark_name, y=1.15)   # move title where we can se it
-        plt.xticks(ind + bar_width, phase_names, rotation=25)
+        plt.xticks(ind + bar_width, phase_names, rotation=15)
         # first_legend = plt.legend((p_unw, p_instr), ('unw', 'instr'), loc="upper center")
         # plt.gca().add_artist(first_legend)
         # plt.legend((p_sample, p_driver), ('sampling', 'driver'), loc="upper right")
@@ -262,7 +263,7 @@ def figure_vs_phase(vs_phases_names, max_y=50, fig_width=1.0, fig_ratio=1/3, adj
         plts.append(p_tmp)
         offset += 1
 
-    plt.xticks(ind + bar_width*len(vs_phases_names) / 2., benchmark_names, rotation=25)
+    plt.xticks(ind + bar_width*len(vs_phases_names) / 2., benchmark_names, rotation=15)
     plt.xlim(0, len(benchmark_names))
     plt.legend(plts, vs_phases_names, loc="best")
     plt.grid(True, zorder=0, axis='y')
