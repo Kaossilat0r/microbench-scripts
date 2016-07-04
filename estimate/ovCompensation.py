@@ -236,13 +236,18 @@ def figure_vs_phase(vs_phases_names, max_y=50, fig_width=1.0, fig_ratio=1/3, adj
 
     benchmark_names = []
     for benchmark_name, benchmark in sorted(ov_compensation_data_with_avg.items()):
+        if benchmark_name == C.AVERAGE_WITH_DII:
+            continue
         benchmark_names.append(benchmark_name)
+
 
     vs_phases = {}
     for phase_name in vs_phases_names:
 
         vs_phases[phase_name] = {C.INSTR_PERCENT: [], C.UNW_PERCENT: [], C.PERCENT: []}
-        for benchmark_name, benchmark in sorted(ov_compensation_data_with_avg.items()):
+        for benchmark_name in benchmark_names:
+            benchmark = ov_compensation_data_with_avg[benchmark_name]
+
             ov_data = benchmark[C.PHASES][phase_name]
             values = vs_phases[phase_name]
             values[C.INSTR_PERCENT].append(ov_data[C.INSTR_PERCENT])
