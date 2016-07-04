@@ -329,7 +329,8 @@ if __name__ == '__main__':
 
     figure_driver(['453.povray', '450.soplex', '444.namd', '447.dealII', '462.libquantum',
                    '458.sjeng', '473.astar', '482.sphinx3', '464.h264ref', '429.mcf',
-                   '433.milc', '470.lbm', '456.hmmer', '403.gcc', 'average'])
+                   '433.milc', '470.lbm', '456.hmmer', '403.gcc',
+                   C.AVERAGE_WITH_DII, C.AVERAGE_WITHOUT_DII])
 
     figure_ov_compensation()
     figure_single_benchmark()

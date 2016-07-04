@@ -1,9 +1,12 @@
 # global constants
 GLOBAL_SAMPLE_PERCENT = 2
 
-NAME, REF, PROF, COMP, PAPI, PHASES = "name", "refTime", "profTime", "compTime", "emptyPapiHandler", "phases"
+NAME, REF, PROF, COMP, PHASES = "name", "refTime", "profTime", "compTime", "phases"
+PAPI, ITIMER = "emptyPapiHandler", "emptyItimerHandler"
+PAPI_OVERHEAD_PERCENT, ITIMER_OVERHEAD_PERCENT = "papiOvPercent", "itimerOvPercent"
 PERCENT, UNW_PERCENT, INSTR_PERCENT, SAMPLE_PERCENT = "percent", "unwPercent", "instrPercent", "samplePercent"
-DRIVER_SEC, DRIVER_PERCENT, PAPI_OVERHEAD_PERCENT = "driverSeconds", "driverPercent", "papiOvPercent"
+DRIVER_SEC, DRIVER_PERCENT = "driverSeconds", "driverPercent"
+AVERAGE_WITH_DII, AVERAGE_WITHOUT_DII = "average", "average2"
 
 OUT_DIR = "out-estimate"
 

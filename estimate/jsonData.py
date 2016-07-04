@@ -76,23 +76,32 @@ def parse_benchmark_results(path, consider_sampling_costs=False):
 
     benchmark_results_with_avg = benchmark_results.copy()
 
-    # add average values for all benchmarks
-    top_level_fields = [C.PROF, C.COMP, C.REF, C.PAPI, C.PAPI_OVERHEAD_PERCENT]
+    # average benchmark with dealII
+    avg_benchmark1 = add_average_benchmark(benchmark_results_with_avg, C.AVERAGE_WITH_DII)
+    avg_benchmark2 = add_average_benchmark(benchmark_results_with_avg, C.AVERAGE_WITHOUT_DII)
+
+    benchmark_results_with_avg[C.AVERAGE_WITH_DII] = avg_benchmark1
+    benchmark_results_with_avg[C.AVERAGE_WITHOUT_DII] = avg_benchmark2
+
+    # print(benchmark_results)
+    return benchmark_results, benchmark_results_with_avg
+
+
+def add_average_benchmark(benchmark_results_with_avg, average_name):
+    top_level_fields = [C.PROF, C.COMP, C.REF, C.PAPI, C.PAPI_OVERHEAD_PERCENT, C.ITIMER, C.ITIMER_OVERHEAD_PERCENT]
     avg_benchmark = {C.PHASES: {}}
     for field in top_level_fields:
         avg_benchmark[field] = 0.0
-
     for phase_name, phase in benchmark_results_with_avg["462.libquantum"][C.PHASES].items():
         avg_benchmark[C.PHASES][phase_name] = {}
         for ov_name in ov_names:
             avg_benchmark[C.PHASES][phase_name][ov_name] = 0.0
         if phase_name in C.DRIVER_PHASES:
             avg_benchmark[C.PHASES][phase_name][C.DRIVER_PERCENT] = []
-
     length = 0
     for benchmark_name, benchmark in benchmark_results_with_avg.items():
 
-        if benchmark_name == '447.dealII':
+        if average_name == C.AVERAGE_WITHOUT_DII and benchmark_name == '447.dealII':
             continue    # skip this benchmark
         length += 1
 
@@ -105,7 +114,6 @@ def parse_benchmark_results(path, consider_sampling_costs=False):
                     avg_benchmark[C.PHASES][phase_name][ov_name] += phase[ov_name]
             if phase_name in C.DRIVER_PHASES:
                 avg_benchmark[C.PHASES][phase_name][C.DRIVER_PERCENT].append(avg(phase[C.DRIVER_PERCENT]))
-
     for field in top_level_fields:
         avg_benchmark[field] /= length
     for phase_name, phase in avg_benchmark[C.PHASES].items():
@@ -113,12 +121,9 @@ def parse_benchmark_results(path, consider_sampling_costs=False):
             if ov_name != C.DRIVER_PERCENT and ov_name != C.DRIVER_SEC:
                 avg_benchmark[C.PHASES][phase_name][ov_name] /= length
         if phase_name in C.DRIVER_PHASES:
-            avg_benchmark[C.PHASES][phase_name][C.DRIVER_PERCENT] = [avg(avg_benchmark[C.PHASES][phase_name][C.DRIVER_PERCENT])]
-
-    benchmark_results_with_avg["average"] = avg_benchmark
-
-    # print(benchmark_results)
-    return benchmark_results, benchmark_results_with_avg
+            avg_benchmark[C.PHASES][phase_name][C.DRIVER_PERCENT] = [
+                avg(avg_benchmark[C.PHASES][phase_name][C.DRIVER_PERCENT])]
+    return avg_benchmark
 
 
 def parse_driver_results(path, benchmark_results):
@@ -139,6 +144,17 @@ def parse_driver_results(path, benchmark_results):
             runtime_ref = benchmark_results[benchmark_name][C.REF]
             benchmark_results[benchmark_name][C.PAPI] = runtime_papi
             benchmark_results[benchmark_name][C.PAPI_OVERHEAD_PERCENT] = (runtime_papi-runtime_ref)/runtime_ref*100.
+
+    for filename in glob.iglob(path + '/*_itimer'):
+        cols = os.path.basename(filename).split('_')
+        benchmark_name = cols[0]
+
+        if benchmark_name in benchmark_results:
+            runtime_papi = avg(parse_runtimes(filename))
+            runtime_ref = benchmark_results[benchmark_name][C.REF]
+            benchmark_results[benchmark_name][C.ITIMER] = runtime_papi
+            benchmark_results[benchmark_name][C.ITIMER_OVERHEAD_PERCENT] = (runtime_papi-runtime_ref)/runtime_ref*100.
+
 
     for filename in glob.iglob(path + '/*_*-*'):
 
@@ -163,6 +179,10 @@ def parse_runtimes(filename):
     in_file = open(filename)
     for line in in_file:
         if "target | " in line:
+
+            if "#" in line:
+                pass
+
             runtime = line.split(' ')[8]
             runtime_seconds_data.append(float(runtime))
     return runtime_seconds_data
