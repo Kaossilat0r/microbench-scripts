@@ -183,7 +183,7 @@ def figure_driver(benchmark_names, max_y=20):
         # first_legend = plt.legend((p_unw, p_instr), ('unw', 'instr'), loc="upper center")
         # plt.gca().add_artist(first_legend)
         # plt.legend((p_sample, p_driver), ('sampling', 'driver'), loc="upper right")
-        plt.legend((p_sample, p_unw, p_instr, p_driver), ('sampling','instr', 'unw', 'driver'), bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
+        plt.legend((p_sample, p_instr, p_unw, p_driver), ('sample', 'instr','unw', 'driver'), bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
                    ncol=4, mode="expand", borderaxespad=0.)
 
         plt.grid(True, zorder=0, axis='y')
