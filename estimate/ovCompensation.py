@@ -227,7 +227,7 @@ def figure_single_phase():
         plt.close()
 
 
-def figure_vs_phase(vs_phases_names, max_y=50, fig_width=1.0, fig_ratio=1/3, adjust_bottom=0.20):
+def figure_vs_phase(vs_phases_names, max_y=50, fig_width=1.0, fig_ratio=1/3, adjust_bottom=0.15):
     fig, ax = new_fig(fig_width, figure_ratio=fig_ratio)
     plt.gcf().subplots_adjust(top=0.90)  # show title
     plt.gcf().subplots_adjust(bottom=adjust_bottom)  # show x labels
