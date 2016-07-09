@@ -103,9 +103,9 @@ def figure_ov_compensation():
     p_ref = plt.bar(ind, values[C.REF], bar_width, color='b', zorder=3)
     plt.xticks(ind + bar_width / 2., names, rotation=25)
     plt.legend((p_before, p_after, p_ref),
-               ('before ov compensation', 'after ov compensation', 'ref runtime'), loc="upper right")
+               ('Before ov. compensation', 'After ov. compensation', 'Reference runtime'), loc="upper right")
     plt.grid(True, zorder=0, axis='y')
-    plt.ylabel("runtime [s]")
+    plt.ylabel("Runtime [s]")
     save_fig("overheadCompensation")
     plt.close()
 
@@ -130,7 +130,7 @@ def figure_single_benchmark(max_y=20):
 
         plt.title(benchmark_name)
         plt.xticks(ind + bar_width / 2., phase_names, rotation=25)
-        plt.legend((p_unw, p_instr), ('unw', 'instr'), loc="upper right")
+        plt.legend((p_unw, p_instr), ('unw.', 'instr.'), loc="upper right")
         plt.grid(True, zorder=0, axis='y')
         plt.ylabel(default_y_label)
         save_fig(benchmark_name)
@@ -183,7 +183,7 @@ def figure_driver(benchmark_names, max_y=20):
         # first_legend = plt.legend((p_unw, p_instr), ('unw', 'instr'), loc="upper center")
         # plt.gca().add_artist(first_legend)
         # plt.legend((p_sample, p_driver), ('sampling', 'driver'), loc="upper right")
-        plt.legend((p_sample, p_instr, p_unw, p_driver), ('sample', 'instr','unw', 'driver'), bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
+        plt.legend((p_sample, p_instr, p_unw, p_driver), ('sample', 'instr.','unw.', 'driver'), bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
                    ncol=4, mode="expand", borderaxespad=0.)
 
         plt.grid(True, zorder=0, axis='y')
@@ -317,7 +317,7 @@ def autolabel(plt, rects, above_figure=True):
 
 if __name__ == '__main__':
 
-    default_y_label = "overhead [\%]"
+    default_y_label = "Overhead [\%]"
 
     if not os.path.exists(C.OUT_DIR):
         os.makedirs(C.OUT_DIR)
