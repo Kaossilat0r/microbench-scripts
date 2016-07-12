@@ -89,6 +89,11 @@ def save_fig(filename, fix_pgf=False):
 def figure_ov_compensation():
     fig, ax = new_fig(1.0, figure_ratio=1/3)
 
+    plt.gcf().subplots_adjust(top=0.90)  # show title
+    plt.gcf().subplots_adjust(bottom=0.2)  # show x labels
+    plt.gcf().subplots_adjust(left=0.1)    # show y label
+    plt.gcf().subplots_adjust(right=0.98)
+
     names, values = [], {C.REF: [], C.COMP: [], C.PROF: []}
     for name, v in sorted(ov_compensation_data_with_avg.items()):
         names.append(name)
@@ -101,7 +106,7 @@ def figure_ov_compensation():
     p_before = plt.bar(ind, values[C.PROF], bar_width, color='y', zorder=3)
     p_after = plt.bar(ind, values[C.COMP], bar_width, color='r', zorder=3)
     p_ref = plt.bar(ind, values[C.REF], bar_width, color='b', zorder=3)
-    plt.xticks(ind + bar_width / 2., names, rotation=25)
+    plt.xticks(ind + bar_width / 2., names, rotation=15)
     plt.legend((p_before, p_after, p_ref),
                ('Before ov. compensation', 'After ov. compensation', 'Reference runtime'), loc="upper right")
     plt.grid(True, zorder=0, axis='y')
