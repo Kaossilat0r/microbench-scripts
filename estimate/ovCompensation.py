@@ -96,6 +96,10 @@ def figure_ov_compensation():
 
     names, values = [], {C.REF: [], C.COMP: [], C.PROF: []}
     for name, v in sorted(ov_compensation_data_with_avg.items()):
+
+        if name == C.AVERAGE_WITHOUT_DII:
+            continue
+
         names.append(name)
         values[C.PROF].append(v[C.PROF])
         values[C.COMP].append(v[C.COMP])
@@ -107,6 +111,7 @@ def figure_ov_compensation():
     p_after = plt.bar(ind, values[C.COMP], bar_width, color='r', zorder=3)
     p_ref = plt.bar(ind, values[C.REF], bar_width, color='b', zorder=3)
     plt.xticks(ind + bar_width / 2., names, rotation=15)
+    plt.xlim(0, len(names))
     plt.legend((p_before, p_after, p_ref),
                ('Before ov. compensation', 'After ov. compensation', 'Reference runtime'), loc="upper right")
     plt.grid(True, zorder=0, axis='y')
