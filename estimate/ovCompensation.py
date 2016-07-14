@@ -107,9 +107,9 @@ def figure_ov_compensation():
 
     ind = np.arange(len(names)) + 0.25  # the x locations for the groups
     bar_width = 0.5  # the width of the bars: can also be len(x) sequence
-    p_before = plt.bar(ind, values[C.PROF], bar_width, color='y', zorder=3)
-    p_after = plt.bar(ind, values[C.COMP], bar_width, color='r', zorder=3)
-    p_ref = plt.bar(ind, values[C.REF], bar_width, color='b', zorder=3)
+    p_before = plt.bar(ind, values[C.PROF], bar_width, color=C.COL_SAMPLE, zorder=3)
+    p_after = plt.bar(ind, values[C.COMP], bar_width, color=C.COL_INSTR, zorder=3)
+    p_ref = plt.bar(ind, values[C.REF], bar_width, color=C.COL_DRIVER, zorder=3)
     plt.xticks(ind + bar_width / 2., names, rotation=15)
     plt.xlim(0, len(names))
     plt.legend((p_before, p_after, p_ref),
