@@ -64,8 +64,12 @@ COL = {
     'hybrid-dyn':   "#66A61E",
     'ss-min':       "#E6AB02",
     'ss-cpd':       "#A6761D",
-    'ss-all':       "#666666"
+    'ss-all':       "#666666",
 }
+COL_INSTR  = "#d7191c"
+COL_SAMPLE = "#fdae61"
+COL_UNW    = "#abdda4"
+COL_DRIVER = "#2b83ba"
 
 DRIVER_PHASES = ["ss-cpd", "ss-min", "unw-all", "unw-min", "hybrid-st", "hybrid-dyn"]
 

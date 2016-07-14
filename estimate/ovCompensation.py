@@ -135,8 +135,8 @@ def figure_single_benchmark(max_y=20):
 
         ind = np.arange(len(phase_names)) + 0.25  # the x locations for the groups
         bar_width = 0.5  # the width of the bars: can also be len(x) sequence
-        p_instr = plt.bar(ind, ov_percents[C.INSTR_PERCENT], bar_width, color='b', zorder=3)
-        p_unw = plt.bar(ind, ov_percents[C.UNW_PERCENT], bar_width, color='r', zorder=3, bottom=ov_percents[C.INSTR_PERCENT])
+        p_instr = plt.bar(ind, ov_percents[C.INSTR_PERCENT], bar_width, color=C.COL_INSTR, zorder=3)
+        p_unw = plt.bar(ind, ov_percents[C.UNW_PERCENT], bar_width, color=C.COL_UNW, zorder=3, bottom=ov_percents[C.INSTR_PERCENT])
 
         plt.title(benchmark_name)
         plt.xticks(ind + bar_width / 2., phase_names, rotation=25)
@@ -182,11 +182,11 @@ def figure_driver(benchmark_names, max_y=20):
 
         ind = np.arange(len(phase_names)) + 0.25  # the x locations for the groups
         bar_width = 0.25  # the width of the bars: can also be len(x) sequence
-        p_sample = plt.bar(ind, ov_percents[C.PAPI], bar_width, color='y', zorder=3)
-        p_instr = plt.bar(ind, ov_percents[C.INSTR_PERCENT], bar_width, color='b', zorder=3, bottom=ov_percents[C.PAPI])
-        p_unw = plt.bar(ind, ov_percents[C.UNW_PERCENT], bar_width, color='r', zorder=3, bottom=ov_percents[BOTH])
-        p_driver = plt.bar(ind+0.25, ov_percents[C.DRIVER_PERCENT], bar_width, color='g', zorder=3)
-        p_error = plt.errorbar(ind+0.25+bar_width/2, ov_percents[C.DRIVER_PERCENT], zorder=4, yerr=ov_percents[STDEV], fmt="none")
+        p_sample = plt.bar(ind, ov_percents[C.PAPI], bar_width, color=C.COL_SAMPLE, zorder=3)
+        p_instr = plt.bar(ind, ov_percents[C.INSTR_PERCENT], bar_width, color=C.COL_INSTR, zorder=3, bottom=ov_percents[C.PAPI])
+        p_unw = plt.bar(ind, ov_percents[C.UNW_PERCENT], bar_width, color=C.COL_UNW, zorder=3, bottom=ov_percents[BOTH])
+        p_driver = plt.bar(ind+0.25, ov_percents[C.DRIVER_PERCENT], bar_width, color=C.COL_DRIVER, zorder=3)
+        p_error = plt.errorbar(ind+0.25+bar_width/2, ov_percents[C.DRIVER_PERCENT], zorder=4, ecolor=C.COL_INSTR, yerr=ov_percents[STDEV], fmt="none")
 
         plt.title(benchmark_name, y=1.15)   # move title where we can se it
         plt.xticks(ind + bar_width, phase_names, rotation=15)
