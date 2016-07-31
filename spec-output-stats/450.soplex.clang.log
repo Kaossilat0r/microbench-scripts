@@ -1,0 +1,60 @@
+spec-centos/450.soplex.clang.samples
+####################### 450.soplex.clang #######################
+    numberOfCalls: 48673282662 | samplesPerSecond : 10000
+    runtime: 11003.2 s (ref 102.4 s) | overhead: 10900.8 s or 1.065e+04 %
+    smallestFunction : _ZNK6soplex5SVSet5DLPSV4nextEv : 107.1ns | edgesWithZeroRuntime: 0
+
+==OvCompensation==  
+	new runtime in seconds: 781.799 | overcompensated: 0 functions with 0 calls.
+==RemoveUnrelated==  
+==unw-all==  
+   UNW 	  9.4412 % | unwound 708 of 271 conj. | unwindSamples: 1807261 | undwindOverhead: 9.66779 s
+ ---->	  9.4412 % | overallOverhead: 9.66779 s
+==Reset== Phase 
+
+==unw-min==  
+   UNW 	 2.73346 % | unwound 423 of 271 conj. | unwindSamples: 1322537 | undwindOverhead: 2.79907 s
+ ---->	 2.73346 % | overallOverhead: 2.79907 s
+==Reset== Phase 
+
+==ss-all==  
+ INSTR 	332.728  % | instr. 709 of 709 methods | instrCalls: 48673282662 | instrOverhead: 340.713 s
+ ---->	332.728  % | overallOverhead: 340.713 s
+==SanityCheck==  
+==Reset== Phase 
+
+==ss-cpd==  
+ INSTR 	73.864   % | instr. 346 of 709 methods | instrCalls: 10805242335 | instrOverhead: 75.6367 s
+ ---->	73.864   % | overallOverhead: 75.6367 s
+==hybrid-dyn==  
+ INSTR 	0.0748018 % | instr. 139 of 709 methods | instrCalls: 10942432 | instrOverhead: 0.076597 s
+   UNW 	1.34125  % | unwound 217 of 271 conj. | unwindSamples: 1016767 | undwindOverhead: 1.37344 s
+ ---->	1.41605  % | overallOverhead: 1.45004 s
+==SanityCheck==  
+==Reset== Phase 
+
+==ss-cpd==  
+==hybrid-st==  
+ INSTR 	21.1797  % | instr. 195 of 709 methods | instrCalls: 3098284597 | instrOverhead: 21.688 s
+   UNW 	0.228269 % | unwound 128 of 271 conj. | unwindSamples: 233747 | undwindOverhead: 0.233747 s
+ ---->	21.4079  % | overallOverhead: 21.9217 s
+==SanityCheck==  
+==Reset== Phase 
+
+==RemoveUnrelated==  
+==ss-cpd==  
+==ss-min==  
+ INSTR 	21.1661  % | instr. 194 of 489 methods | instrCalls: 3096302236 | instrOverhead: 21.6741 s
+ ---->	21.1661  % | overallOverhead: 21.6741 s
+	deleted 128 instrumentation marker(s)
+==SanityCheck==  
+==Reset== Phase 
+
+==ss-cpd==  
+==ss-conj==  
+ INSTR 	73.8369  % | instr. 319 of 489 methods | instrCalls: 10801288214 | instrOverhead: 75.609 s
+ ---->	73.8369  % | overallOverhead: 75.609 s
+==SanityCheck==  
+==Reset== Phase 
+
+ ---- Fastest Phase: 0        % with OvCompensation

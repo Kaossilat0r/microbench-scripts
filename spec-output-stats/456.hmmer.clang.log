@@ -1,0 +1,59 @@
+spec-centos/456.hmmer.clang.samples
+####################### 456.hmmer.clang #######################
+    numberOfCalls: 837542270 | samplesPerSecond : 10000
+    runtime: 522.675 s (ref 332.6 s) | overhead: 190.075 s or 57.15 %
+    smallestFunction : FScale : 115ns | edgesWithZeroRuntime: 0
+
+==OvCompensation==  
+	new runtime in seconds: 346.791 | overcompensated: 0 functions with 0 calls.
+==RemoveUnrelated==  
+==unw-all==  
+   UNW 	 3.04269 % | unwound 69 of 9 conj. | unwindSamples: 3303440 | undwindOverhead: 10.12 s
+ ---->	 3.04269 % | overallOverhead: 10.12 s
+==Reset== Phase 
+
+==unw-min==  
+   UNW 	0.023546 % | unwound 9 of 9 conj. | unwindSamples: 78314 | undwindOverhead: 0.078314 s
+ ---->	0.023546 % | overallOverhead: 0.078314 s
+==Reset== Phase 
+
+==ss-all==  
+ INSTR 	1.76272  % | instr. 70 of 70 methods | instrCalls: 837542270 | instrOverhead: 5.8628 s
+ ---->	1.76272  % | overallOverhead: 5.8628 s
+==SanityCheck==  
+==Reset== Phase 
+
+==ss-cpd==  
+ INSTR 	0.587804 % | instr. 25 of 70 methods | instrCalls: 279290917 | instrOverhead: 1.95504 s
+ ---->	0.587804 % | overallOverhead: 1.95504 s
+==hybrid-dyn==  
+ INSTR 	3.36741e-08 % | instr. 8 of 70 methods | instrCalls: 16 | instrOverhead: 1.12e-07 s
+   UNW 	0.0235448 % | unwound 5 of 9 conj. | unwindSamples: 78310 | undwindOverhead: 0.07831 s
+ ---->	0.0235448 % | overallOverhead: 0.0783101 s
+==SanityCheck==  
+==Reset== Phase 
+
+==ss-cpd==  
+==hybrid-st==  
+   UNW 	0.023546 % | unwound 9 of 9 conj. | unwindSamples: 78314 | undwindOverhead: 0.078314 s
+ ---->	0.023546 % | overallOverhead: 0.078314 s
+==SanityCheck==  
+==Reset== Phase 
+
+==RemoveUnrelated==  
+==ss-cpd==  
+==ss-min==  
+ INSTR 	0.00210467 % | instr. 15 of 35 methods | instrCalls: 1000020 | instrOverhead: 0.00700014 s
+ ---->	0.00210467 % | overallOverhead: 0.00700014 s
+	deleted 8 instrumentation marker(s)
+==SanityCheck==  
+==Reset== Phase 
+
+==ss-cpd==  
+==ss-conj==  
+ INSTR 	0.58675  % | instr. 22 of 35 methods | instrCalls: 278790175 | instrOverhead: 1.95153 s
+ ---->	0.58675  % | overallOverhead: 1.95153 s
+==SanityCheck==  
+==Reset== Phase 
+
+ ---- Fastest Phase: 0        % with OvCompensation

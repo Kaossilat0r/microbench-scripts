@@ -1,0 +1,81 @@
+spec-centos/403.gcc.clang.samples
+####################### 403.gcc.clang #######################
+    numberOfCalls: 2351604807 | samplesPerSecond : 10000
+    runtime: 660.662 s (ref 40.1 s) | overhead: 620.562 s or 1548 %
+    smallestFunction : eq_pointer : 108ns | edgesWithZeroRuntime: 0
+
+==OvCompensation==  
+	new runtime in seconds: 166.825 | overcompensated: 0 functions with 0 calls.
+==RemoveUnrelated==  
+==unw-all==  
+   UNW 	 39.9395 % | unwound 2104 of 1027 conj. | unwindSamples: 334183 | undwindOverhead: 16.0157 s
+ ---->	 39.9395 % | overallOverhead: 16.0157 s
+==Reset== Phase 
+
+==unw-min==  
+   UNW 	 35.3902 % | unwound 1906 of 1027 conj. | unwindSamples: 333473 | undwindOverhead: 14.1915 s
+ ---->	 35.3902 % | overallOverhead: 14.1915 s
+==Reset== Phase 
+
+==ss-all==  
+ INSTR 	41.0505  % | instr. 2105 of 2105 methods | instrCalls: 2351604807 | instrOverhead: 16.4612 s
+ ---->	41.0505  % | overallOverhead: 16.4612 s
+==SanityCheck==  
+==Reset== Phase 
+
+==ss-cpd==  
+ INSTR 	26.0082  % | instr. 1494 of 2105 methods | instrCalls: 1489901037 | instrOverhead: 10.4293 s
+ ---->	26.0082  % | overallOverhead: 10.4293 s
+==hybrid-dyn==  
+ INSTR 	19.5547  % | instr. 935 of 2105 methods | instrCalls: 1120204822 | instrOverhead: 7.84143 s
+   UNW 	0.62396  % | unwound 551 of 1027 conj. | unwindSamples: 90201 | undwindOverhead: 0.250208 s
+ ---->	20.1787  % | overallOverhead: 8.09164 s
+==SanityCheck==  
+==Reset== Phase 
+
+==ss-cpd==  
+==hybrid-st==  
+ INSTR 	23.369   % | instr. 1301 of 2105 methods | instrCalls: 1338712387 | instrOverhead: 9.37099 s
+   UNW 	0.138369 % | unwound 268 of 1027 conj. | unwindSamples: 55486 | undwindOverhead: 0.055486 s
+ ---->	23.5074  % | overallOverhead: 9.42647 s
+==SanityCheck==  
+==Reset== Phase 
+
+==RemoveUnrelated==  
+==ss-cpd==  
+==ss-min==  
+ INSTR 	19.4621  % | instr. 1037 of 1755 methods | instrCalls: 1114899262 | instrOverhead: 7.80429 s
+ ---->	19.4621  % | overallOverhead: 7.80429 s
+	deleted 413 instrumentation marker(s)
+==SanityCheck==  
+==Reset== Phase 
+
+==ss-cpd==  
+==ss-conj==  
+ INSTR 	24.0096  % | instr. 1217 of 1755 methods | instrCalls: 1375406206 | instrOverhead: 9.62784 s
+ ---->	24.0096  % | overallOverhead: 9.62784 s
+Error: the conjunction: "copy_decl_for_inlining" is reached on multiple paths by: "expand_call_inline"
+ERROR in conjunction: "copy_decl_for_inlining"
+    Paths of "expand_call_inline" and "lhd_tree_inlining_copy_res_decl_for_inlining" intersect!
+ERROR in conjunction: "copy_decl_for_inlining"
+    Paths of "lhd_tree_inlining_copy_res_decl_for_inlining" and "expand_call_inline" intersect!
+Error: the conjunction: "default_function_array_conversion" is reached on multiple paths by: "build_function_call"
+ERROR in conjunction: "default_function_array_conversion"
+    Paths of "build_function_call" and "default_conversion" intersect!
+ERROR in conjunction: "default_function_array_conversion"
+    Paths of "default_conversion" and "build_function_call" intersect!
+Error: the conjunction: "set_block_for_insn" is reached on multiple paths by: "commit_edge_insertions"
+ERROR in conjunction: "set_block_for_insn"
+    Paths of "add_insn_before" and "emit_insns_after" intersect!
+ERROR in conjunction: "set_block_for_insn"
+    Paths of "emit_insns_after" and "add_insn_before" intersect!
+Error: the conjunction: "validate_change" is reached on multiple paths by: "for_each_rtx"
+ERROR in conjunction: "validate_change"
+    Paths of "replace_loop_mem" and "replace_loop_reg" intersect!
+ERROR in conjunction: "validate_change"
+    Paths of "replace_loop_reg" and "replace_loop_mem" intersect!
+Error: the conjunction: "varray_grow" is reached on multiple paths by: "emit_swap_insn"
+==SanityCheck==  
+==Reset== Phase 
+
+ ---- Fastest Phase: 0        % with OvCompensation

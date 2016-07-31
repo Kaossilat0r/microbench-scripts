@@ -1,0 +1,58 @@
+spec-centos/470.lbm.clang.samples
+####################### 470.lbm.clang #######################
+    numberOfCalls: 6060 | samplesPerSecond : 10000
+    runtime: 366.035 s (ref 359 s) | overhead: 7.03533 s or 1.96 %
+    smallestFunction : LBM_swapGrids : 670.3ns | edgesWithZeroRuntime: 0
+
+==OvCompensation==  
+	new runtime in seconds: 366.039 | overcompensated: 0 functions with 0 calls.
+==RemoveUnrelated==  
+==unw-all==  
+   UNW 	0.977772 % | unwound 11 of 1 conj. | unwindSamples: 3495956 | undwindOverhead: 3.5102 s
+ ---->	0.977772 % | overallOverhead: 3.5102 s
+==Reset== Phase 
+
+==unw-min==  
+   UNW 	0.00387967 % | unwound 1 of 1 conj. | unwindSamples: 13928 | undwindOverhead: 0.013928 s
+ ---->	0.00387967 % | overallOverhead: 0.013928 s
+==Reset== Phase 
+
+==ss-all==  
+ INSTR 	1.18162e-05 % | instr. 12 of 12 methods | instrCalls: 6060 | instrOverhead: 4.242e-05 s
+ ---->	1.18162e-05 % | overallOverhead: 4.242e-05 s
+==SanityCheck==  
+==Reset== Phase 
+
+==ss-cpd==  
+ INSTR 	3.89972e-09 % | instr. 3 of 12 methods | instrCalls: 2 | instrOverhead: 1.4e-08 s
+ ---->	3.89972e-09 % | overallOverhead: 1.4e-08 s
+==hybrid-dyn==  
+ INSTR 	3.89972e-09 % | instr. 3 of 12 methods | instrCalls: 2 | instrOverhead: 1.4e-08 s
+ ---->	3.89972e-09 % | overallOverhead: 1.4e-08 s
+==SanityCheck==  
+==Reset== Phase 
+
+==ss-cpd==  
+==hybrid-st==  
+   UNW 	0.00387967 % | unwound 1 of 1 conj. | unwindSamples: 13928 | undwindOverhead: 0.013928 s
+ ---->	0.00387967 % | overallOverhead: 0.013928 s
+==SanityCheck==  
+==Reset== Phase 
+
+==RemoveUnrelated==  
+==ss-cpd==  
+==ss-min==  
+ INSTR 	3.89972e-09 % | instr. 2 of 4 methods | instrCalls: 2 | instrOverhead: 1.4e-08 s
+ ---->	3.89972e-09 % | overallOverhead: 1.4e-08 s
+	deleted 1 instrumentation marker(s)
+==SanityCheck==  
+==Reset== Phase 
+
+==ss-cpd==  
+==ss-conj==  
+ INSTR 	3.89972e-09 % | instr. 3 of 4 methods | instrCalls: 2 | instrOverhead: 1.4e-08 s
+ ---->	3.89972e-09 % | overallOverhead: 1.4e-08 s
+==SanityCheck==  
+==Reset== Phase 
+
+ ---- Fastest Phase: 0        % with OvCompensation

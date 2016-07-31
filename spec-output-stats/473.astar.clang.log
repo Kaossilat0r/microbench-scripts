@@ -1,0 +1,60 @@
+spec-centos/473.astar.clang.samples
+####################### 473.astar.clang #######################
+    numberOfCalls: 25958346414 | samplesPerSecond : 10000
+    runtime: 6055.36 s (ref 156 s) | overhead: 5899.36 s or 3782 %
+    smallestFunction : _ZN9flexarrayIP6regobjEixEi : 108.3ns | edgesWithZeroRuntime: 0
+
+==OvCompensation==  
+	new runtime in seconds: 604.128 | overcompensated: 0 functions with 0 calls.
+==RemoveUnrelated==  
+==unw-all==  
+   UNW 	 4.98291 % | unwound 122 of 48 conj. | unwindSamples: 1931762 | undwindOverhead: 7.77334 s
+ ---->	 4.98291 % | overallOverhead: 7.77334 s
+==Reset== Phase 
+
+==unw-min==  
+   UNW 	0.864497 % | unwound 63 of 48 conj. | unwindSamples: 362163 | undwindOverhead: 1.34862 s
+ ---->	0.864497 % | overallOverhead: 1.34862 s
+==Reset== Phase 
+
+==ss-all==  
+ INSTR 	116.48   % | instr. 123 of 123 methods | instrCalls: 25958346411 | instrOverhead: 181.708 s
+ ---->	116.48   % | overallOverhead: 181.708 s
+==SanityCheck==  
+==Reset== Phase 
+
+==ss-cpd==  
+ INSTR 	26.4175  % | instr. 67 of 123 methods | instrCalls: 5887332358 | instrOverhead: 41.2113 s
+ ---->	26.4175  % | overallOverhead: 41.2113 s
+==hybrid-dyn==  
+ INSTR 	0.0215553 % | instr. 28 of 123 methods | instrCalls: 4803761 | instrOverhead: 0.0336263 s
+   UNW 	0.201222 % | unwound 39 of 48 conj. | unwindSamples: 308717 | undwindOverhead: 0.313907 s
+ ---->	0.222778 % | overallOverhead: 0.347533 s
+==SanityCheck==  
+==Reset== Phase 
+
+==ss-cpd==  
+==hybrid-st==  
+ INSTR 	11.1767  % | instr. 40 of 123 methods | instrCalls: 2490800771 | instrOverhead: 17.4356 s
+   UNW 	0.0873468 % | unwound 21 of 48 conj. | unwindSamples: 136261 | undwindOverhead: 0.136261 s
+ ---->	11.264   % | overallOverhead: 17.5719 s
+==SanityCheck==  
+==Reset== Phase 
+
+==RemoveUnrelated==  
+==ss-cpd==  
+==ss-min==  
+ INSTR 	15.9353  % | instr. 41 of 95 methods | instrCalls: 3551302664 | instrOverhead: 24.8591 s
+ ---->	15.9353  % | overallOverhead: 24.8591 s
+	deleted 23 instrumentation marker(s)
+==SanityCheck==  
+==Reset== Phase 
+
+==ss-cpd==  
+==ss-conj==  
+ INSTR 	37.1932  % | instr. 67 of 95 methods | instrCalls: 8288780106 | instrOverhead: 58.0215 s
+ ---->	37.1932  % | overallOverhead: 58.0215 s
+==SanityCheck==  
+==Reset== Phase 
+
+ ---- Fastest Phase: 0        % with OvCompensation
